@@ -1,0 +1,54 @@
+buildscript {
+	ext {
+		springDslVersion = '0.0.1.BUILD-SNAPSHOT'
+		springCloudDataflowVersion = '2.3.0.BUILD-SNAPSHOT'
+		springCloudDeployerVersion = '2.1.0.BUILD-SNAPSHOT'
+	}
+}
+
+plugins {
+	id 'org.springframework.boot' version '2.2.0.M6'
+	id 'java'
+}
+
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'maven'
+
+group = 'org.springframework.cloud'
+version = '0.0.1-BUILD-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+	maven { url 'https://repo.spring.io/snapshot' }
+	maven { url 'https://repo.spring.io/milestone' }
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.dsl:spring-dsl-bom:$springDslVersion"
+		mavenBom "org.springframework.cloud:spring-cloud-dataflow-dependencies:$springCloudDataflowVersion"
+	}
+	dependencies {
+		dependency "org.springframework.cloud:spring-cloud-deployer-resource-maven:$springCloudDeployerVersion"
+	}
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.dsl:spring-dsl-starter-lspserver'
+	implementation 'org.springframework.dsl:spring-dsl-symboltable'
+	implementation 'org.springframework.cloud:spring-cloud-dataflow-core'
+	implementation 'org.springframework.cloud:spring-cloud-dataflow-rest-client'
+	implementation 'org.springframework.cloud:spring-cloud-deployer-resource-maven'
+	implementation 'com.github.ben-manes.caffeine:caffeine'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+		exclude group: 'junit', module: 'junit'
+	}
+}
+
+test {
+	useJUnitPlatform()
+}

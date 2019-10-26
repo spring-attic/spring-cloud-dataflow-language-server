@@ -1,0 +1,9 @@
+spring:
+  main:
+    banner-mode: "off"
+  autoconfigure:
+    exclude: org.springframework.cloud.dataflow.rest.client.config.DataFlowClientAutoConfiguration
+  dsl:
+    lsp:
+      server:
+        mode: PROCESS

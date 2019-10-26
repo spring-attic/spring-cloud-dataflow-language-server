@@ -1,0 +1,4 @@
+logging:
+  level:
+    org.springframework.dsl: debug
+    org.springframework.cloud.dataflow.language: debug
