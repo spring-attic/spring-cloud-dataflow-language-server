@@ -20,6 +20,14 @@ public class DataflowStreamParams {
 	private String name;
 	private String server;
 
+	public DataflowStreamParams() {
+	}
+
+	public DataflowStreamParams(String name, String server) {
+		this.name = name;
+		this.server = server;
+	}
+
 	public String getName() {
 		return name;
 	}

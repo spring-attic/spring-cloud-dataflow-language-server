@@ -20,6 +20,19 @@ public class DataflowStreamCreateParams extends DataflowStreamParams {
 	private String definition;
 	private String description;
 
+	public DataflowStreamCreateParams() {
+	}
+
+	public DataflowStreamCreateParams(String name, String server, String description, String definition) {
+		super(name, server);
+		this.definition = definition;
+		this.description = description;
+	}
+
+	public static DataflowStreamCreateParams from(String name, String server, String description, String definition) {
+		return new DataflowStreamCreateParams(name, server, description, definition);
+	}
+
 	public String getDefinition() {
 		return definition;
 	}

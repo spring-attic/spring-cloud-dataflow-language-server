@@ -17,6 +17,17 @@ package org.springframework.cloud.dataflow.language.server.domain;
 
 public class DataflowStreamUndeployParams extends DataflowStreamParams {
 
+	public DataflowStreamUndeployParams() {
+	}
+
+	public DataflowStreamUndeployParams(String name, String server) {
+		super(name, server);
+	}
+
+	public static DataflowStreamUndeployParams from(String name, String server) {
+		return new DataflowStreamUndeployParams(name, server);
+	}
+
 	@Override
 	public String toString() {
 		return "DataflowStreamUndeployParams [name=" + getName() + ", server=" + getServer() + "]";

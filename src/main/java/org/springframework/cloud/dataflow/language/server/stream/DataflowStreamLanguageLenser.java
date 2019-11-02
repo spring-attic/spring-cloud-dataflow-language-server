@@ -24,6 +24,10 @@ import java.util.stream.Collectors;
 
 import org.springframework.cloud.dataflow.core.dsl.StreamNode;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowStreamCreateParams;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowStreamDeployParams;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowStreamDestroyParams;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowStreamUndeployParams;
 import org.springframework.dsl.document.DocumentText;
 import org.springframework.dsl.domain.CodeLens;
 import org.springframework.dsl.domain.Range;
@@ -50,9 +54,9 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 					.command()
 						.command(DataflowLanguages.COMMAND_STREAM_DEPLOY)
 						.title(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE)
-						.argument(getStreamName(item))
-						.argument(getStreamEnvironment(deployment, item))
-						.argument(getDeploymentProperties(deployment.getItems()))
+						.argument(DataflowStreamDeployParams.from(getStreamName(item),
+							getStreamEnvironment(deployment, item),
+							getDeploymentProperties(deployment.getItems())))
 						.and()
 					.build();
 			})
@@ -75,10 +79,8 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 				.command()
 					.command(DataflowLanguages.COMMAND_STREAM_CREATE)
 					.title(DataflowLanguages.COMMAND_STREAM_CREATE_TITLE)
-					.argument(streamName)
-					.argument(streamEnvironment)
-					.argument(streamDescription)
-					.argument(getDefinition(item.getDefinitionItem().getStreamNode()))
+					.argument(DataflowStreamCreateParams.from(streamName, streamEnvironment, streamDescription,
+						getDefinition(item.getDefinitionItem().getStreamNode())))
 					.and()
 				.build(),
 			CodeLens.codeLens()
@@ -86,8 +88,7 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 				.command()
 					.command(DataflowLanguages.COMMAND_STREAM_DESTROY)
 					.title(DataflowLanguages.COMMAND_STREAM_DESTROY_TITLE)
-					.argument(streamName)
-					.argument(streamEnvironment)
+					.argument(DataflowStreamDestroyParams.from(streamName, streamEnvironment))
 					.and()
 				.build(),
 			CodeLens.codeLens()
@@ -95,8 +96,7 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 				.command()
 					.command(DataflowLanguages.COMMAND_STREAM_DEPLOY)
 					.title(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE)
-					.argument(streamName)
-					.argument(streamEnvironment)
+					.argument(DataflowStreamDeployParams.from(streamName, streamEnvironment))
 					.and()
 				.build(),
 			CodeLens.codeLens()
@@ -104,8 +104,7 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 				.command()
 					.command(DataflowLanguages.COMMAND_STREAM_UNDEPLOY)
 					.title(DataflowLanguages.COMMAND_STREAM_UNDEPLOY_TITLE)
-					.argument(streamName)
-					.argument(streamEnvironment)
+					.argument(DataflowStreamUndeployParams.from(streamName, streamEnvironment))
 					.and()
 				.build()
 		);

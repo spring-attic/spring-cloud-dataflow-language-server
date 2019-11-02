@@ -22,6 +22,24 @@ public class DataflowStreamDeployParams extends DataflowStreamParams {
 
 	private Map<String, String> properties = Collections.emptyMap();
 
+	public DataflowStreamDeployParams() {
+	}
+
+	public DataflowStreamDeployParams(String name, String server, Map<String, String> properties) {
+		super(name, server);
+		if (properties != null) {
+			this.properties = properties;
+		}
+	}
+
+	public static DataflowStreamDeployParams from(String name, String server) {
+		return new DataflowStreamDeployParams(name, server, null);
+	}
+
+	public static DataflowStreamDeployParams from(String name, String server, Map<String, String> properties) {
+		return new DataflowStreamDeployParams(name, server, properties);
+	}
+
 	public Map<String, String> getProperties() {
 		return properties;
 	}

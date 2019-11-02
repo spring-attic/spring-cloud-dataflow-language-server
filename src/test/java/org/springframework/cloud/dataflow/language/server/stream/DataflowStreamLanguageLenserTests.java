@@ -18,7 +18,6 @@ package org.springframework.cloud.dataflow.language.server.stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -66,7 +65,6 @@ public class DataflowStreamLanguageLenserTests {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void testLintsMultipleStreamsWithDeployProperties() {
 		String data =
 			"-- @prop foo1=bar1\n" +
@@ -81,13 +79,11 @@ public class DataflowStreamLanguageLenserTests {
 		assertThat(lenses.get(0).getCommand().getTitle()).isEqualTo(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE);
 		assertThat(lenses.get(0).getCommand().getCommand()).isEqualTo(DataflowLanguages.COMMAND_STREAM_DEPLOY);
 		assertThat(lenses.get(0).getRange()).isEqualTo(Range.from(0, 0, 0, 18));
-		assertThat(lenses.get(0).getCommand().getArguments()).hasSize(3);
-		assertThat(lenses.get(0).getCommand().getArguments().get(0)).isEqualTo("stream1");
-		assertThat(lenses.get(0).getCommand().getArguments().get(1)).isNull();
-		assertThat(lenses.get(0).getCommand().getArguments().get(2)).isInstanceOf(Map.class);
-		assertThat((Map<String, String>)lenses.get(0).getCommand().getArguments().get(2)).hasSize(2);
-		assertThat((Map<String, String>)lenses.get(0).getCommand().getArguments().get(2)).containsEntry("foo1", "bar1");
-		assertThat((Map<String, String>)lenses.get(0).getCommand().getArguments().get(2)).containsEntry("foo2", "bar2");
+		assertThat(lenses.get(0).getCommand().getArguments()).hasSize(1);
+		assertThat(lenses.get(0).getCommand().getArguments().get(0).toString()).contains("name=stream1");
+		assertThat(lenses.get(0).getCommand().getArguments().get(0).toString()).contains("server=null");
+		assertThat(lenses.get(0).getCommand().getArguments().get(0).toString()).contains("properties={foo1=bar1, foo2=bar2}");
+
 		assertThat(lenses.get(0).getRange()).isEqualTo(Range.from(0, 0, 0, 18));
 		assertThat(lenses.get(1).getRange()).isEqualTo(Range.from(2, 0, 2, 18));
 		assertThat(lenses.get(5).getCommand().getTitle()).isEqualTo(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE);
@@ -122,22 +118,22 @@ public class DataflowStreamLanguageLenserTests {
 		assertThat(lenses).hasSize(6);
 
 		assertThat(lenses.get(0).getCommand().getTitle()).isEqualTo(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE);
-		assertThat(lenses.get(0).getCommand().getArguments()).hasSize(3);
-		assertThat(lenses.get(0).getCommand().getArguments().get(0)).isEqualTo("name1");
-		assertThat(lenses.get(0).getCommand().getArguments().get(1)).isEqualTo("env1");
+		assertThat(lenses.get(0).getCommand().getArguments()).hasSize(1);
+		assertThat(lenses.get(0).getCommand().getArguments().get(0).toString()).contains("name=name1");
+		assertThat(lenses.get(0).getCommand().getArguments().get(0).toString()).contains("server=env1");
 
 		assertThat(lenses.get(1).getCommand().getTitle()).isEqualTo(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE);
-		assertThat(lenses.get(1).getCommand().getArguments()).hasSize(3);
-		assertThat(lenses.get(1).getCommand().getArguments().get(0)).isEqualTo("name1");
-		assertThat(lenses.get(1).getCommand().getArguments().get(1)).isEqualTo("env2");
+		assertThat(lenses.get(1).getCommand().getArguments()).hasSize(1);
+		assertThat(lenses.get(1).getCommand().getArguments().get(0).toString()).contains("name=name1");
+		assertThat(lenses.get(1).getCommand().getArguments().get(0).toString()).contains("server=env2");
 
 		assertThat(lenses.get(2).getCommand().getTitle()).isEqualTo(DataflowLanguages.COMMAND_STREAM_CREATE_TITLE);
 		assertThat(lenses.get(2).getRange()).isEqualTo(Range.from(8, 0, 8, 8));
-		assertThat(lenses.get(2).getCommand().getArguments()).hasSize(4);
-		assertThat(lenses.get(2).getCommand().getArguments().get(0)).isEqualTo("name1");
-		assertThat(lenses.get(2).getCommand().getArguments().get(1)).isNull();
-		assertThat(lenses.get(2).getCommand().getArguments().get(2)).isEqualTo("desc1");
-		assertThat(lenses.get(2).getCommand().getArguments().get(3)).isEqualTo("time|log");
+		assertThat(lenses.get(2).getCommand().getArguments()).hasSize(1);
+		assertThat(lenses.get(2).getCommand().getArguments().get(0).toString()).contains("name=name1");
+		assertThat(lenses.get(2).getCommand().getArguments().get(0).toString()).contains("server=null");
+		assertThat(lenses.get(2).getCommand().getArguments().get(0).toString()).contains("description=desc1");
+		assertThat(lenses.get(2).getCommand().getArguments().get(0).toString()).contains("definition=time|log");
 
 		assertThat(lenses.get(3).getCommand().getTitle()).isEqualTo(DataflowLanguages.COMMAND_STREAM_DESTROY_TITLE);
 
