@@ -28,6 +28,7 @@ import org.springframework.dsl.symboltable.model.ClassSymbol;
 import org.springframework.dsl.symboltable.model.LocalScope;
 import org.springframework.dsl.symboltable.support.DefaultSymbolTable;
 import org.springframework.dsl.symboltable.support.DocumentSymbolTableVisitor;
+import org.springframework.stereotype.Component;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -38,6 +39,7 @@ import reactor.core.publisher.Mono;
  * @author Janne Valkealahti
  *
  */
+@Component
 public class AppLanguageSymbolizer extends AbstractAppLanguageService implements Symbolizer {
 
 	@Override

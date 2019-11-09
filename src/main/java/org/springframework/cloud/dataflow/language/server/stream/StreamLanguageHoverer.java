@@ -19,9 +19,11 @@ import org.springframework.dsl.domain.Hover;
 import org.springframework.dsl.domain.Position;
 import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.Hoverer;
+import org.springframework.stereotype.Component;
 
 import reactor.core.publisher.Mono;
 
+@Component
 public class StreamLanguageHoverer extends AbstractStreamLanguageService implements Hoverer {
 
     @Override

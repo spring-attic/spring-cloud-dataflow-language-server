@@ -25,9 +25,11 @@ import org.springframework.dsl.domain.Position;
 import org.springframework.dsl.domain.Range;
 import org.springframework.dsl.service.Completioner;
 import org.springframework.dsl.service.DslContext;
+import org.springframework.stereotype.Component;
 
 import reactor.core.publisher.Flux;
 
+@Component
 public class StreamLanguageCompletioner extends AbstractStreamLanguageService implements Completioner {
 
 	private static final Logger log = LoggerFactory.getLogger(StreamLanguageCompletioner.class);

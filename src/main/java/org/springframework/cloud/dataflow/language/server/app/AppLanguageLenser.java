@@ -21,6 +21,7 @@ import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
 import org.springframework.dsl.domain.CodeLens;
 import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.Lenser;
+import org.springframework.stereotype.Component;
 
 import reactor.core.publisher.Flux;
 
@@ -30,6 +31,7 @@ import reactor.core.publisher.Flux;
  * @author Janne Valkealahti
  *
  */
+@Component
 public class AppLanguageLenser extends AbstractAppLanguageService implements Lenser {
 
 	private final static Logger log = LoggerFactory.getLogger(AppLanguageLenser.class);

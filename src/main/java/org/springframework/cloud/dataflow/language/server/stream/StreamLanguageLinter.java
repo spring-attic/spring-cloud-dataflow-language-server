@@ -18,9 +18,11 @@ package org.springframework.cloud.dataflow.language.server.stream;
 import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.reconcile.Linter;
 import org.springframework.dsl.service.reconcile.ReconcileProblem;
+import org.springframework.stereotype.Component;
 
 import reactor.core.publisher.Flux;
 
+@Component
 public class StreamLanguageLinter extends AbstractStreamLanguageService implements Linter {
 
 	@Override

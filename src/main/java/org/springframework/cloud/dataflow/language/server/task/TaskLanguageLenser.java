@@ -30,10 +30,12 @@ import org.springframework.dsl.domain.CodeLens;
 import org.springframework.dsl.domain.Range;
 import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.Lenser;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import reactor.core.publisher.Flux;
 
+@Component
 public class TaskLanguageLenser extends AbstractTaskLanguageService implements Lenser {
 
 	@Override

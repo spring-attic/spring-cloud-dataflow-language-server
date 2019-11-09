@@ -18,9 +18,11 @@ package org.springframework.cloud.dataflow.language.server.task;
 import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.reconcile.Linter;
 import org.springframework.dsl.service.reconcile.ReconcileProblem;
+import org.springframework.stereotype.Component;
 
 import reactor.core.publisher.Flux;
 
+@Component
 public class TaskLanguageLinter extends AbstractTaskLanguageService implements Linter {
 
 	@Override
