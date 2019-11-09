@@ -53,10 +53,6 @@ import reactor.core.publisher.Mono;
 public abstract class AbstractStreamLanguageService extends AbstractDslService {
 
 	private static final Logger log = LoggerFactory.getLogger(AbstractStreamLanguageService.class);
-	private static final DocumentText envPrefix = DocumentText.from("@env");
-	private static final DocumentText namePrefix = DocumentText.from("@name");
-	private static final DocumentText descPrefix = DocumentText.from("@desc");
-	protected static final DocumentText propPrefix = DocumentText.from("@prop");
 	protected DataFlowOperationsService dataflowOperationsService;
 	protected DataflowCacheService dataflowCacheService;
 
@@ -246,13 +242,13 @@ public abstract class AbstractStreamLanguageService extends AbstractDslService {
 						item.contentRange = Range.from(lineRange.getStart().getLine(), contentStart,
 								lineRange.getEnd().getLine(), lineRange.getEnd().getCharacter());
 					}
-					if (contentStart > -1 && lineContent.startsWith(envPrefix, contentStart)) {
+					if (contentStart > -1 && lineContent.startsWith(DataflowLanguages.TEXT_ENV_PREFIX, contentStart)) {
 						envItem = item;
-					} else if (contentStart > -1 && lineContent.startsWith(namePrefix, contentStart)) {
+					} else if (contentStart > -1 && lineContent.startsWith(DataflowLanguages.TEXT_NAME_PREFIX, contentStart)) {
 						nameItem = item;
-					} else if (contentStart > -1 && lineContent.startsWith(descPrefix, contentStart)) {
+					} else if (contentStart > -1 && lineContent.startsWith(DataflowLanguages.TEXT_DESC_PREFIX, contentStart)) {
 						descItem = item;
-					} else if (contentStart > -1 && lineContent.startsWith(propPrefix, contentStart)) {
+					} else if (contentStart > -1 && lineContent.startsWith(DataflowLanguages.TEXT_PROP_PREFIX, contentStart)) {
 						deploymentItems.add(item);
 					} else {
 						match = false;

@@ -15,6 +15,7 @@
  */
 package org.springframework.cloud.dataflow.language.server;
 
+import org.springframework.dsl.document.DocumentText;
 import org.springframework.dsl.model.LanguageId;
 
 /**
@@ -72,4 +73,11 @@ public class DataflowLanguages {
 
 	// dsl context attribute names
 	public final static String CONTEXT_SESSION_ENVIRONMENTS_ATTRIBUTE = "jsonRpcSessionEnvironments";
+
+	// Text constants
+	public static final DocumentText TEXT_ENV_PREFIX = DocumentText.from("@env");
+	public static final DocumentText TEXT_NAME_PREFIX = DocumentText.from("@name");
+	public static final DocumentText TEXT_DESC_PREFIX = DocumentText.from("@desc");
+	public static final DocumentText TEXT_PROP_PREFIX = DocumentText.from("@prop");
+	public static final DocumentText TEXT_ARG_PREFIX = DocumentText.from("@arg");
 }

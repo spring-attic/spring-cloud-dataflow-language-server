@@ -45,11 +45,6 @@ public abstract class AbstractTaskLanguageService extends AbstractDslService {
 	private static final Logger log = LoggerFactory.getLogger(AbstractTaskLanguageService.class);
 	protected DataFlowOperationsService dataflowOperationsService;
 	protected DataflowCacheService dataflowCacheService;
-	private static final DocumentText envPrefix = DocumentText.from("@env");
-	private static final DocumentText namePrefix = DocumentText.from("@name");
-	private static final DocumentText descPrefix = DocumentText.from("@desc");
-	protected static final DocumentText propPrefix = DocumentText.from("@prop");
-	protected static final DocumentText argPrefix = DocumentText.from("@arg");
 
 	public AbstractTaskLanguageService() {
 		super(DataflowLanguages.LANGUAGE_TASK);
@@ -187,15 +182,15 @@ public abstract class AbstractTaskLanguageService extends AbstractDslService {
 								lineRange.getEnd().getLine(), lineRange.getEnd().getCharacter());
 					}
 					boolean match = true;
-					if (contentStart > -1 && lineContent.startsWith(envPrefix, contentStart)) {
+					if (contentStart > -1 && lineContent.startsWith(DataflowLanguages.TEXT_ENV_PREFIX, contentStart)) {
 						envItem = item;
-					} else if (contentStart > -1 && lineContent.startsWith(namePrefix, contentStart)) {
+					} else if (contentStart > -1 && lineContent.startsWith(DataflowLanguages.TEXT_NAME_PREFIX, contentStart)) {
 						nameItem = item;
-					} else if (contentStart > -1 && lineContent.startsWith(descPrefix, contentStart)) {
+					} else if (contentStart > -1 && lineContent.startsWith(DataflowLanguages.TEXT_DESC_PREFIX, contentStart)) {
 						descItem = item;
-					} else if (contentStart > -1 && lineContent.startsWith(propPrefix, contentStart)) {
+					} else if (contentStart > -1 && lineContent.startsWith(DataflowLanguages.TEXT_PROP_PREFIX, contentStart)) {
 						launchItems.add(item);
-					} else if (contentStart > -1 && lineContent.startsWith(argPrefix, contentStart)) {
+					} else if (contentStart > -1 && lineContent.startsWith(DataflowLanguages.TEXT_ARG_PREFIX, contentStart)) {
 						launchArgItems.add(item);
 					} else {
 						match = false;

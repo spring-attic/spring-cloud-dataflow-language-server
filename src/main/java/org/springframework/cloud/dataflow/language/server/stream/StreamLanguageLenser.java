@@ -177,10 +177,10 @@ public class StreamLanguageLenser extends AbstractStreamLanguageService implemen
 			if (split.length == 2) {
 				int firstAlphaNumeric = firstLetterOrDigit(split[0]);
 				if (firstAlphaNumeric > -1) {
-					int lastIndexOf = split[0].indexOf(propPrefix);
+					int lastIndexOf = split[0].indexOf(DataflowLanguages.TEXT_PROP_PREFIX);
 					if (lastIndexOf > -1) {
-						properties.put(split[0].subSequence(lastIndexOf + propPrefix.length(), split[0].length()).toString().trim(),
-						split[1].toString().trim());
+						properties.put(split[0].subSequence(lastIndexOf + DataflowLanguages.TEXT_PROP_PREFIX.length(),
+								split[0].length()).toString().trim(), split[1].toString().trim());
 					}
 				}
 			}

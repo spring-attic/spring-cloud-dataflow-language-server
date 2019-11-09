@@ -168,10 +168,10 @@ public class TaskLanguageLenser extends AbstractTaskLanguageService implements L
 			if (split.length == 2) {
 				int firstAlphaNumeric = firstLetterOrDigit(split[0]);
 				if (firstAlphaNumeric > -1) {
-					int lastIndexOf = split[0].indexOf(propPrefix);
+					int lastIndexOf = split[0].indexOf(DataflowLanguages.TEXT_PROP_PREFIX);
 					if (lastIndexOf > -1) {
-						properties.put(split[0].subSequence(lastIndexOf + propPrefix.length(), split[0].length()).toString().trim(),
-						split[1].toString().trim());
+						properties.put(split[0].subSequence(lastIndexOf + DataflowLanguages.TEXT_PROP_PREFIX.length(),
+								split[0].length()).toString().trim(), split[1].toString().trim());
 					}
 				}
 			}
@@ -181,9 +181,11 @@ public class TaskLanguageLenser extends AbstractTaskLanguageService implements L
 	private List<String> getCommandLineArgs(List<LaunchItem> items) {
 		List<String> args = new ArrayList<>();
 		items.stream().forEach(item -> {
-			int lastIndexOf = item.getText().indexOf(argPrefix);
+			int lastIndexOf = item.getText().indexOf(DataflowLanguages.TEXT_ARG_PREFIX);
 			if (lastIndexOf > -1) {
-				args.add(item.getText().subSequence(lastIndexOf + propPrefix.length(), item.getText().length()).toString().trim());
+				args.add(item.getText()
+						.subSequence(lastIndexOf + DataflowLanguages.TEXT_ARG_PREFIX.length(), item.getText().length())
+						.toString().trim());
 			}
 		});
 		return args;
