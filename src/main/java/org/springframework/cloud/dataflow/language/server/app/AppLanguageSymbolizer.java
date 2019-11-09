@@ -17,12 +17,11 @@ package org.springframework.cloud.dataflow.language.server.app;
 
 import java.util.List;
 
-import org.springframework.dsl.domain.DocumentSymbol;
-import org.springframework.dsl.domain.SymbolInformation;
 import org.springframework.dsl.domain.SymbolKind;
 import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.symbol.SymbolizeInfo;
 import org.springframework.dsl.service.symbol.Symbolizer;
+import org.springframework.dsl.support.DslUtils;
 import org.springframework.dsl.symboltable.SymbolTable;
 import org.springframework.dsl.symboltable.model.ClassSymbol;
 import org.springframework.dsl.symboltable.model.LocalScope;
@@ -62,7 +61,7 @@ public class AppLanguageSymbolizer extends AbstractAppLanguageService implements
 				return visitor;
 			})
 			.map(visitor -> visitor.getSymbolizeInfo());
-		return new SymbolizeInfoWrapper(symbolizeInfo);
+		return DslUtils.symbolizeInfoFromMono(symbolizeInfo);
 	}
 
 	private static SymbolTable buildTable(List<AppEntry> items) {
@@ -86,25 +85,6 @@ public class AppLanguageSymbolizer extends AbstractAppLanguageService implements
 			appClass.define(appMetadataSymbol);
 		}
 		return table;
-	}
-
-	private static class SymbolizeInfoWrapper implements SymbolizeInfo {
-
-		private final Mono<SymbolizeInfo> symbolizeInfo;
-
-		SymbolizeInfoWrapper(Mono<SymbolizeInfo> symbolizeInfo) {
-			this.symbolizeInfo = symbolizeInfo.cache();
-		}
-
-		@Override
-		public Flux<DocumentSymbol> documentSymbols() {
-			return symbolizeInfo.map(si -> si.documentSymbols()).flatMapMany(i -> i);
-		}
-
-		@Override
-		public Flux<SymbolInformation> symbolInformations() {
-			return symbolizeInfo.map(si -> si.symbolInformations()).flatMapMany(i -> i);
-		}
 	}
 
 	public static class AppSymbol extends ClassSymbol {

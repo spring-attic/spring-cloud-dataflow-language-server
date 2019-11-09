@@ -18,13 +18,12 @@ package org.springframework.cloud.dataflow.language.server.task;
 import java.util.List;
 
 import org.springframework.cloud.dataflow.core.dsl.TaskNode;
-import org.springframework.dsl.domain.DocumentSymbol;
 import org.springframework.dsl.domain.Range;
-import org.springframework.dsl.domain.SymbolInformation;
 import org.springframework.dsl.domain.SymbolKind;
 import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.symbol.SymbolizeInfo;
 import org.springframework.dsl.service.symbol.Symbolizer;
+import org.springframework.dsl.support.DslUtils;
 import org.springframework.dsl.symboltable.SymbolTable;
 import org.springframework.dsl.symboltable.model.ClassSymbol;
 import org.springframework.dsl.symboltable.model.LocalScope;
@@ -33,7 +32,6 @@ import org.springframework.dsl.symboltable.support.DocumentSymbolTableVisitor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -65,7 +63,7 @@ public class TaskLanguageSymbolizer extends AbstractTaskLanguageService implemen
 				return visitor;
 			})
 			.map(visitor -> visitor.getSymbolizeInfo());
-		return new SymbolizeInfoWrapper(symbolizeInfo);
+		return DslUtils.symbolizeInfoFromMono(symbolizeInfo);
 	}
 
 	private static SymbolTable buildTable(List<TaskItem> items) {
@@ -102,25 +100,6 @@ public class TaskLanguageSymbolizer extends AbstractTaskLanguageService implemen
 			}
 		}
 		return taskName;
-	}
-
-	private static class SymbolizeInfoWrapper implements SymbolizeInfo {
-
-		private final Mono<SymbolizeInfo> symbolizeInfo;
-
-		SymbolizeInfoWrapper(Mono<SymbolizeInfo> symbolizeInfo) {
-			this.symbolizeInfo = symbolizeInfo.cache();
-		}
-
-		@Override
-		public Flux<DocumentSymbol> documentSymbols() {
-			return symbolizeInfo.map(si -> si.documentSymbols()).flatMapMany(i -> i);
-		}
-
-		@Override
-		public Flux<SymbolInformation> symbolInformations() {
-			return symbolizeInfo.map(si -> si.symbolInformations()).flatMapMany(i -> i);
-		}
 	}
 
 	public static class TaskSymbol extends ClassSymbol {
