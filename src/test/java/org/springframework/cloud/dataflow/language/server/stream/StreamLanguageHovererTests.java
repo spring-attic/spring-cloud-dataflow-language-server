@@ -15,5 +15,5 @@
  */
 package org.springframework.cloud.dataflow.language.server.stream;
 
-public class DataflowStreamLanguageHovererTests {
+public class StreamLanguageHovererTests {
 }

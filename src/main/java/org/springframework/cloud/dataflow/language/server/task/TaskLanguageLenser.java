@@ -34,7 +34,7 @@ import org.springframework.util.StringUtils;
 
 import reactor.core.publisher.Flux;
 
-public class DataflowTaskLanguageLenser extends AbstractDataflowTaskLanguageService implements Lenser {
+public class TaskLanguageLenser extends AbstractTaskLanguageService implements Lenser {
 
 	@Override
 	public Flux<CodeLens> lense(DslContext context) {

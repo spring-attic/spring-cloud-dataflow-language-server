@@ -22,7 +22,7 @@ import org.springframework.dsl.service.Hoverer;
 
 import reactor.core.publisher.Mono;
 
-public class DataflowStreamLanguageHoverer extends AbstractDataflowStreamLanguageService implements Hoverer {
+public class StreamLanguageHoverer extends AbstractStreamLanguageService implements Hoverer {
 
     @Override
     public Mono<Hover> hover(DslContext context, Position position) {

@@ -19,16 +19,16 @@ import org.springframework.cloud.dataflow.language.server.app.AppLanguageLenser;
 import org.springframework.cloud.dataflow.language.server.app.AppLanguageLinter;
 import org.springframework.cloud.dataflow.language.server.app.AppLanguageSymbolizer;
 import org.springframework.cloud.dataflow.language.server.controller.DataflowJsonRpcController;
-import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamLanguageCompletioner;
-import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamLanguageFolderer;
-import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamLanguageHoverer;
-import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamLanguageLenser;
-import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamLanguageLinter;
-import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamLanguageSymbolizer;
-import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamRuntimeLanguageLenser;
-import org.springframework.cloud.dataflow.language.server.task.DataflowTaskLanguageLenser;
-import org.springframework.cloud.dataflow.language.server.task.DataflowTaskLanguageLinter;
-import org.springframework.cloud.dataflow.language.server.task.DataflowTaskLanguageSymbolizer;
+import org.springframework.cloud.dataflow.language.server.stream.StreamLanguageCompletioner;
+import org.springframework.cloud.dataflow.language.server.stream.StreamLanguageFolderer;
+import org.springframework.cloud.dataflow.language.server.stream.StreamLanguageHoverer;
+import org.springframework.cloud.dataflow.language.server.stream.StreamLanguageLenser;
+import org.springframework.cloud.dataflow.language.server.stream.StreamLanguageLinter;
+import org.springframework.cloud.dataflow.language.server.stream.StreamLanguageSymbolizer;
+import org.springframework.cloud.dataflow.language.server.stream.StreamRuntimeLanguageLenser;
+import org.springframework.cloud.dataflow.language.server.task.TaskLanguageLenser;
+import org.springframework.cloud.dataflow.language.server.task.TaskLanguageLinter;
+import org.springframework.cloud.dataflow.language.server.task.TaskLanguageSymbolizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dsl.lsp.server.support.JvmLspExiter;
@@ -55,52 +55,52 @@ public class DataflowLanguagesConfiguration {
 
     @Bean
     public Linter dataflowStreamLanguageLinter() {
-        return new DataflowStreamLanguageLinter();
+        return new StreamLanguageLinter();
     }
 
     @Bean
     public Lenser dataflowStreamLanguageLenser() {
-        return new DataflowStreamLanguageLenser();
+        return new StreamLanguageLenser();
     }
 
     @Bean
     public Hoverer dataflowStreamLanguageHoverer() {
-        return new DataflowStreamLanguageHoverer();
+        return new StreamLanguageHoverer();
     }
 
     @Bean
     public Symbolizer dataflowStreamLanguageSymbolizer() {
-        return new DataflowStreamLanguageSymbolizer();
+        return new StreamLanguageSymbolizer();
     }
 
     @Bean
     public Completioner dataflowStreamLanguageCompletioner() {
-        return new DataflowStreamLanguageCompletioner();
+        return new StreamLanguageCompletioner();
     }
 
     @Bean
     public Folderer dataflowStreamLanguageFolderer() {
-        return new DataflowStreamLanguageFolderer();
+        return new StreamLanguageFolderer();
     }
 
     @Bean
     public Lenser dataflowStreamRuntimeLanguageLenser() {
-        return new DataflowStreamRuntimeLanguageLenser();
+        return new StreamRuntimeLanguageLenser();
     }
 
     @Bean
     public Linter dataflowTaskLanguageLinter() {
-        return new DataflowTaskLanguageLinter();
+        return new TaskLanguageLinter();
     }
 
     @Bean
     public Lenser dataflowTaskLanguageLenser() {
-        return new DataflowTaskLanguageLenser();
+        return new TaskLanguageLenser();
     }
 
     @Bean
     public Symbolizer dataflowTaskLanguageSymbolizer() {
-        return new DataflowTaskLanguageSymbolizer();
+        return new TaskLanguageSymbolizer();
     }
 
     @Bean

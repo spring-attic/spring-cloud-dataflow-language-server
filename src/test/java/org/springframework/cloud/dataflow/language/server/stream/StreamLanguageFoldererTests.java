@@ -31,9 +31,9 @@ import org.springframework.dsl.domain.FoldingRange;
 import org.springframework.dsl.domain.FoldingRangeKind;
 import org.springframework.dsl.service.DslContext;
 
-public class DataflowStreamLanguageFoldererTests {
+public class StreamLanguageFoldererTests {
 
-	private final DataflowStreamLanguageFolderer folderer = new DataflowStreamLanguageFolderer();
+	private final StreamLanguageFolderer folderer = new StreamLanguageFolderer();
 
 	@BeforeEach
 	public void setup() {
@@ -44,7 +44,7 @@ public class DataflowStreamLanguageFoldererTests {
 	@Test
 	public void testComments() {
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
-				AbstractDataflowStreamLanguageServiceTests.DSL_COMMENTS_IN_MULTI);
+				AbstractStreamLanguageServiceTests.DSL_COMMENTS_IN_MULTI);
 		List<FoldingRange> folds = folderer.fold(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
 		assertThat(folds).hasSize(5);

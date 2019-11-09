@@ -41,7 +41,7 @@ import reactor.core.publisher.Mono;
  * @author Janne Valkealahti
  *
  */
-public class DataflowTaskLanguageSymbolizer extends AbstractDataflowTaskLanguageService implements Symbolizer {
+public class TaskLanguageSymbolizer extends AbstractTaskLanguageService implements Symbolizer {
 
 	@Override
 	public SymbolizeInfo symbolize(DslContext context) {

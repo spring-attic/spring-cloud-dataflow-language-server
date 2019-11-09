@@ -28,7 +28,7 @@ import org.springframework.dsl.service.Folderer;
 
 import reactor.core.publisher.Flux;
 
-public class DataflowStreamLanguageFolderer extends AbstractDataflowStreamLanguageService implements Folderer {
+public class StreamLanguageFolderer extends AbstractStreamLanguageService implements Folderer {
 
 	@Override
 	public Flux<FoldingRange> fold(DslContext context) {

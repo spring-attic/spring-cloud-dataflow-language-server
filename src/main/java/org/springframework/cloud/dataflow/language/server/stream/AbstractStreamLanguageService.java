@@ -50,9 +50,9 @@ import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public abstract class AbstractDataflowStreamLanguageService extends AbstractDslService {
+public abstract class AbstractStreamLanguageService extends AbstractDslService {
 
-	private static final Logger log = LoggerFactory.getLogger(AbstractDataflowStreamLanguageService.class);
+	private static final Logger log = LoggerFactory.getLogger(AbstractStreamLanguageService.class);
 	private static final DocumentText envPrefix = DocumentText.from("@env");
 	private static final DocumentText namePrefix = DocumentText.from("@name");
 	private static final DocumentText descPrefix = DocumentText.from("@desc");
@@ -60,11 +60,11 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 	protected DataFlowOperationsService dataflowOperationsService;
 	protected DataflowCacheService dataflowCacheService;
 
-	public AbstractDataflowStreamLanguageService() {
+	public AbstractStreamLanguageService() {
 		super(DataflowLanguages.LANGUAGE_STREAM);
 	}
 
-	public AbstractDataflowStreamLanguageService(LanguageId languageId) {
+	public AbstractStreamLanguageService(LanguageId languageId) {
 		super(languageId);
 	}
 

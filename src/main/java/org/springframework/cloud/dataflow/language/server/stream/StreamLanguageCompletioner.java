@@ -28,9 +28,9 @@ import org.springframework.dsl.service.DslContext;
 
 import reactor.core.publisher.Flux;
 
-public class DataflowStreamLanguageCompletioner extends AbstractDataflowStreamLanguageService implements Completioner {
+public class StreamLanguageCompletioner extends AbstractStreamLanguageService implements Completioner {
 
-	private static final Logger log = LoggerFactory.getLogger(DataflowStreamLanguageCompletioner.class);
+	private static final Logger log = LoggerFactory.getLogger(StreamLanguageCompletioner.class);
 
 	@Override
 	public Flux<CompletionItem> complete(DslContext context, Position position) {

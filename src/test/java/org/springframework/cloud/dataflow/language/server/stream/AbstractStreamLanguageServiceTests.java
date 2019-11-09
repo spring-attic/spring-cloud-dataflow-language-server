@@ -22,16 +22,16 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
-import org.springframework.cloud.dataflow.language.server.stream.AbstractDataflowStreamLanguageService.StreamItem;
+import org.springframework.cloud.dataflow.language.server.stream.AbstractStreamLanguageService.StreamItem;
 import org.springframework.cloud.dataflow.language.server.support.DataFlowOperationsService;
 import org.springframework.cloud.dataflow.language.server.support.DataflowCacheService;
 import org.springframework.dsl.document.Document;
 import org.springframework.dsl.document.TextDocument;
 import org.springframework.dsl.domain.Range;
 
-public class AbstractDataflowStreamLanguageServiceTests {
+public class AbstractStreamLanguageServiceTests {
 
-	private static final TestDataflowStreamLanguageService service = new TestDataflowStreamLanguageService();
+	private static final TestStreamLanguageService service = new TestStreamLanguageService();
 
 	@BeforeEach
 	public void setup() {
@@ -102,7 +102,7 @@ public class AbstractDataflowStreamLanguageServiceTests {
 	@Test
 	public void testMultiEnvsAndNameDescDefinedInMetadata() {
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
-				AbstractDataflowStreamLanguageServiceTests.DSL_ONE_MULTI_ENV);
+				AbstractStreamLanguageServiceTests.DSL_ONE_MULTI_ENV);
 		List<StreamItem> result = service.parse(document).collectList().block();
 		assertThat(result).hasSize(1);
 		assertThat(result.get(0).getDeployments()).hasSize(2);
@@ -311,9 +311,9 @@ public class AbstractDataflowStreamLanguageServiceTests {
 		assertThat(result.get(1).getCommentRanges().get(0)).isEqualTo(Range.from(8, 0, 9, 1));
 	}
 
-	private static class TestDataflowStreamLanguageService extends AbstractDataflowStreamLanguageService {
+	private static class TestStreamLanguageService extends AbstractStreamLanguageService {
 
-		public TestDataflowStreamLanguageService() {
+		public TestStreamLanguageService() {
 			setDataflowCacheService(new DataflowCacheService());
 		}
 	}

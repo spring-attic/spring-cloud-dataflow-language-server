@@ -42,7 +42,7 @@ import org.springframework.dsl.service.DslContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
-public class DataflowStreamLanguageCompletionerTests {
+public class StreamLanguageCompletionerTests {
 
     @MockBean
     private DataFlowOperations dataFlowOperations;
@@ -60,7 +60,7 @@ public class DataflowStreamLanguageCompletionerTests {
         Mockito.when(dataFlowOperations.completionOperations()).thenReturn(completionOperations);
         Mockito.when(completionOperations.streamCompletions(any(), anyInt())).thenReturn(proposalsResource);
         Mockito.when(proposalsResource.getProposals()).thenReturn(Arrays.asList(proposal));
-        MockDataflowStreamLanguageCompletioner completioner = mockCompletioner();
+        MockStreamLanguageCompletioner completioner = mockCompletioner();
         completioner.setDataflowCacheService(new DataflowCacheService());
 
         List<CompletionItem> completes = completioner
@@ -78,7 +78,7 @@ public class DataflowStreamLanguageCompletionerTests {
         Mockito.when(completionOperations.streamCompletions(any(), anyInt())).thenReturn(proposalsResource);
         Mockito.when(proposalsResource.getProposals())
                 .thenReturn(Arrays.asList(proposal1));
-        MockDataflowStreamLanguageCompletioner completioner = mockCompletioner();
+        MockStreamLanguageCompletioner completioner = mockCompletioner();
         completioner.setDataflowCacheService(new DataflowCacheService());
 
         List<CompletionItem> completes = completioner
@@ -101,7 +101,7 @@ public class DataflowStreamLanguageCompletionerTests {
         Mockito.when(completionOperations.streamCompletions(any(), anyInt())).thenReturn(proposalsResource);
         Mockito.when(proposalsResource.getProposals())
                 .thenReturn(Arrays.asList(proposal1, proposal2, proposal3, proposal4, proposal5, proposal6));
-        MockDataflowStreamLanguageCompletioner completioner = mockCompletioner();
+        MockStreamLanguageCompletioner completioner = mockCompletioner();
         completioner.setDataflowCacheService(new DataflowCacheService());
 
         List<CompletionItem> completes = completioner
@@ -137,11 +137,11 @@ public class DataflowStreamLanguageCompletionerTests {
     @Test
     public void testCorrectEnvPickedFromMetadata() {
         Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
-                AbstractDataflowStreamLanguageServiceTests.DSL_STREAMS_JUST_METADATA);
+                AbstractStreamLanguageServiceTests.DSL_STREAMS_JUST_METADATA);
         Mockito.when(dataFlowOperations.completionOperations()).thenReturn(completionOperations);
         Mockito.when(completionOperations.streamCompletions(any(), anyInt())).thenReturn(proposalsResource);
         Mockito.when(proposalsResource.getProposals()).thenReturn(Collections.emptyList());
-        MockDataflowStreamLanguageCompletioner completioner = mockCompletioner();
+        MockStreamLanguageCompletioner completioner = mockCompletioner();
         completioner.setDataflowCacheService(new DataflowCacheService());
 
         List<CompletionItem> completes = completioner
@@ -151,11 +151,11 @@ public class DataflowStreamLanguageCompletionerTests {
         assertThat(completioner.nameToCheck).isEqualTo("env1");
     }
 
-    private MockDataflowStreamLanguageCompletioner mockCompletioner() {
-        return new MockDataflowStreamLanguageCompletioner();
+    private MockStreamLanguageCompletioner mockCompletioner() {
+        return new MockStreamLanguageCompletioner();
     }
 
-    private class MockDataflowStreamLanguageCompletioner extends DataflowStreamLanguageCompletioner {
+    private class MockStreamLanguageCompletioner extends StreamLanguageCompletioner {
 
         String nameToCheck;
 

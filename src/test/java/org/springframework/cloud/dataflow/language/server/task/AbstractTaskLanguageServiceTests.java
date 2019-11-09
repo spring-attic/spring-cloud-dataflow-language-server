@@ -24,14 +24,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
 import org.springframework.cloud.dataflow.language.server.support.DataFlowOperationsService;
 import org.springframework.cloud.dataflow.language.server.support.DataflowCacheService;
-import org.springframework.cloud.dataflow.language.server.task.AbstractDataflowTaskLanguageService.TaskItem;
+import org.springframework.cloud.dataflow.language.server.task.AbstractTaskLanguageService.TaskItem;
 import org.springframework.dsl.document.Document;
 import org.springframework.dsl.document.TextDocument;
 import org.springframework.dsl.domain.Range;
 
-public class AbstractDataflowTaskLanguageServiceTests {
+public class AbstractTaskLanguageServiceTests {
 
-	private static final TestDataflowTaskLanguageService service = new TestDataflowTaskLanguageService();
+	private static final TestTaskLanguageService service = new TestTaskLanguageService();
 
 	public static final String DSL_ONE_MULTI_ENV =
 		"-- @env env1\n" +
@@ -153,9 +153,9 @@ public class AbstractDataflowTaskLanguageServiceTests {
 		assertThat(result.get(0).getDefinitionItem().getTaskNode()).isNull();
 	}
 
-	private static class TestDataflowTaskLanguageService extends AbstractDataflowTaskLanguageService {
+	private static class TestTaskLanguageService extends AbstractTaskLanguageService {
 
-		public TestDataflowTaskLanguageService() {
+		public TestTaskLanguageService() {
 			setDataflowCacheService(new DataflowCacheService());
 		}
 	}

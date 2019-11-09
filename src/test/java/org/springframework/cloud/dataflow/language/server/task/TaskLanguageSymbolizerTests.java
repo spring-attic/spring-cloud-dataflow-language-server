@@ -32,9 +32,9 @@ import org.springframework.dsl.domain.SymbolInformation;
 import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.symbol.SymbolizeInfo;
 
-public class DataflowTaskLanguageSymbolizerTests {
+public class TaskLanguageSymbolizerTests {
 
-	private final DataflowTaskLanguageSymbolizer symbolizer = new DataflowTaskLanguageSymbolizer();
+	private final TaskLanguageSymbolizer symbolizer = new TaskLanguageSymbolizer();
 
 	@BeforeEach
 	public void setup() {
@@ -44,7 +44,7 @@ public class DataflowTaskLanguageSymbolizerTests {
 
 	@Test
 	public void testMultipleTasks() {
-        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_TASK, 0, AbstractDataflowTaskLanguageServiceTests.DSL_TWO_INLINE_NAME);
+        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_TASK, 0, AbstractTaskLanguageServiceTests.DSL_TWO_INLINE_NAME);
         SymbolizeInfo symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build());
 
         List<SymbolInformation> symbolInformations = symbolizeInfo.symbolInformations().toStream()

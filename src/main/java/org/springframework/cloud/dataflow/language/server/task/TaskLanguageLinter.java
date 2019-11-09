@@ -21,7 +21,7 @@ import org.springframework.dsl.service.reconcile.ReconcileProblem;
 
 import reactor.core.publisher.Flux;
 
-public class DataflowTaskLanguageLinter extends AbstractDataflowTaskLanguageService implements Linter {
+public class TaskLanguageLinter extends AbstractTaskLanguageService implements Linter {
 
 	@Override
 	public Flux<ReconcileProblem> lint(DslContext context) {

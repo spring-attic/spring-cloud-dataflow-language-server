@@ -30,9 +30,9 @@ import org.springframework.dsl.document.TextDocument;
 import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.reconcile.ReconcileProblem;
 
-public class DataflowStreamLanguageLinterTests {
+public class StreamLanguageLinterTests {
 
-	private final DataflowStreamLanguageLinter linter = new DataflowStreamLanguageLinter();
+	private final StreamLanguageLinter linter = new StreamLanguageLinter();
 
 	@BeforeEach
 	public void setup() {

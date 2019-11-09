@@ -73,7 +73,7 @@ import reactor.core.publisher.Mono;
  * @author Janne Valkealahti
  *
  */
-public class DataflowStreamLanguageSymbolizer extends AbstractDataflowStreamLanguageService implements Symbolizer {
+public class StreamLanguageSymbolizer extends AbstractStreamLanguageService implements Symbolizer {
 
 	@Override
 	public SymbolizeInfo symbolize(DslContext context) {

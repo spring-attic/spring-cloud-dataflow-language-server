@@ -28,9 +28,9 @@ import org.springframework.dsl.service.Lenser;
 
 import reactor.core.publisher.Flux;
 
-public class DataflowStreamRuntimeLanguageLenser extends AbstractDataflowStreamLanguageService implements Lenser {
+public class StreamRuntimeLanguageLenser extends AbstractStreamLanguageService implements Lenser {
 
-    public DataflowStreamRuntimeLanguageLenser() {
+    public StreamRuntimeLanguageLenser() {
         super(DataflowLanguages.LANGUAGE_STREAM_RUNTIME);
     }
 

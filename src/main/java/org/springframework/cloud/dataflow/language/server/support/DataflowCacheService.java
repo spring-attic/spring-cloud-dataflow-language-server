@@ -21,8 +21,8 @@ import java.util.List;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-import org.springframework.cloud.dataflow.language.server.stream.AbstractDataflowStreamLanguageService.StreamItem;
-import org.springframework.cloud.dataflow.language.server.task.AbstractDataflowTaskLanguageService.TaskItem;
+import org.springframework.cloud.dataflow.language.server.stream.AbstractStreamLanguageService.StreamItem;
+import org.springframework.cloud.dataflow.language.server.task.AbstractTaskLanguageService.TaskItem;
 import org.springframework.stereotype.Component;
 
 /**

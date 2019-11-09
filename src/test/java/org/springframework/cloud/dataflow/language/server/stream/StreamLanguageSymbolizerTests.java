@@ -34,9 +34,9 @@ import org.springframework.dsl.domain.SymbolKind;
 import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.symbol.SymbolizeInfo;
 
-public class DataflowStreamLanguageSymbolizerTests {
+public class StreamLanguageSymbolizerTests {
 
-    private final DataflowStreamLanguageSymbolizer symbolizer = new DataflowStreamLanguageSymbolizer();
+    private final StreamLanguageSymbolizer symbolizer = new StreamLanguageSymbolizer();
 
 	@BeforeEach
 	public void setup() {
@@ -152,7 +152,7 @@ public class DataflowStreamLanguageSymbolizerTests {
     @Test
     public void testStreamsSameNameDifferentEnv() {
         Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
-                AbstractDataflowStreamLanguageServiceTests.DSL_STREAMS_SAME_NAMES);
+                AbstractStreamLanguageServiceTests.DSL_STREAMS_SAME_NAMES);
         SymbolizeInfo symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build());
 
         List<SymbolInformation> symbolInformations = symbolizeInfo.symbolInformations().toStream()

@@ -40,9 +40,9 @@ import org.springframework.dsl.service.reconcile.ReconcileProblem;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public abstract class AbstractDataflowTaskLanguageService extends AbstractDslService {
+public abstract class AbstractTaskLanguageService extends AbstractDslService {
 
-	private static final Logger log = LoggerFactory.getLogger(AbstractDataflowTaskLanguageService.class);
+	private static final Logger log = LoggerFactory.getLogger(AbstractTaskLanguageService.class);
 	protected DataFlowOperationsService dataflowOperationsService;
 	protected DataflowCacheService dataflowCacheService;
 	private static final DocumentText envPrefix = DocumentText.from("@env");
@@ -51,7 +51,7 @@ public abstract class AbstractDataflowTaskLanguageService extends AbstractDslSer
 	protected static final DocumentText propPrefix = DocumentText.from("@prop");
 	protected static final DocumentText argPrefix = DocumentText.from("@arg");
 
-	public AbstractDataflowTaskLanguageService() {
+	public AbstractTaskLanguageService() {
 		super(DataflowLanguages.LANGUAGE_TASK);
 	}
 

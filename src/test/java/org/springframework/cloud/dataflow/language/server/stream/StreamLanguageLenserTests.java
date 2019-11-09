@@ -31,9 +31,9 @@ import org.springframework.dsl.domain.CodeLens;
 import org.springframework.dsl.domain.Range;
 import org.springframework.dsl.service.DslContext;
 
-public class DataflowStreamLanguageLenserTests {
+public class StreamLanguageLenserTests {
 
-	private final DataflowStreamLanguageLenser lenser = new DataflowStreamLanguageLenser();
+	private final StreamLanguageLenser lenser = new StreamLanguageLenser();
 
 	@BeforeEach
 	public void setup() {
@@ -112,7 +112,7 @@ public class DataflowStreamLanguageLenserTests {
 	@Test
 	public void testMultiEnvsAndNameDescDefinedInMetadata() {
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
-				AbstractDataflowStreamLanguageServiceTests.DSL_ONE_MULTI_ENV);
+				AbstractStreamLanguageServiceTests.DSL_ONE_MULTI_ENV);
 		List<CodeLens> lenses = lenser.lense(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
 		assertThat(lenses).hasSize(6);
@@ -145,7 +145,7 @@ public class DataflowStreamLanguageLenserTests {
 	@Test
 	public void testJustMetadataWithoutStream() {
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
-				AbstractDataflowStreamLanguageServiceTests.DSL_STREAMS_JUST_METADATA);
+				AbstractStreamLanguageServiceTests.DSL_STREAMS_JUST_METADATA);
 		List<CodeLens> lenses = lenser.lense(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
 		assertThat(lenses).hasSize(0);

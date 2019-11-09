@@ -32,9 +32,9 @@ import org.springframework.dsl.domain.CodeLens;
 import org.springframework.dsl.domain.Range;
 import org.springframework.dsl.service.DslContext;
 
-public class DataflowTaskLanguageLenserTests {
+public class TaskLanguageLenserTests {
 
-	private final DataflowTaskLanguageLenser lenser = new DataflowTaskLanguageLenser();
+	private final TaskLanguageLenser lenser = new TaskLanguageLenser();
 
 	@BeforeEach
 	public void setup() {
@@ -45,7 +45,7 @@ public class DataflowTaskLanguageLenserTests {
 	@Test
 	public void testTask() {
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
-				AbstractDataflowTaskLanguageServiceTests.DSL_INLINE_NAME);
+				AbstractTaskLanguageServiceTests.DSL_INLINE_NAME);
 		List<CodeLens> lenses = lenser.lense(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
 		assertThat(lenses).hasSize(3);
@@ -68,7 +68,7 @@ public class DataflowTaskLanguageLenserTests {
 	@SuppressWarnings("unchecked")
 	public void testTaskMultiEnv() {
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
-				AbstractDataflowTaskLanguageServiceTests.DSL_ONE_MULTI_ENV);
+				AbstractTaskLanguageServiceTests.DSL_ONE_MULTI_ENV);
 		List<CodeLens> lenses = lenser.lense(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
 		assertThat(lenses).hasSize(6);
@@ -125,7 +125,7 @@ public class DataflowTaskLanguageLenserTests {
 	@Test
 	public void testTaskNoName() {
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
-				AbstractDataflowTaskLanguageServiceTests.DSL_NO_NAME);
+				AbstractTaskLanguageServiceTests.DSL_NO_NAME);
 		List<CodeLens> lenses = lenser.lense(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
 		assertThat(lenses).hasSize(0);
