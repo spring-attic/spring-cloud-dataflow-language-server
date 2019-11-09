@@ -271,9 +271,11 @@ public abstract class AbstractDataflowTaskLanguageService extends AbstractDslSer
 			}
 			if (taskName == null && nameItem != null) {
 				Range contentRange = nameItem.getContentRange();
-				taskName = nameItem.getText()
-						.substring(contentRange.getStart().getCharacter() + 6, nameItem.getText().length()).trim()
-						.toString();
+				DocumentText nameItemText = nameItem.getText();
+				int s = contentRange.getStart().getCharacter() + 6;
+				if (nameItemText.length() > s) {
+					taskName = nameItemText.substring(s, nameItem.getText().length()).trim().toString();
+				}
 			}
 			if (taskName == null) {
 				Range range = Range.from(line, 0, line, 0);
