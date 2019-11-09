@@ -69,6 +69,23 @@ public class AbstractDataflowStreamLanguageServiceTests {
 	public static final String DSL_STREAMS_ERROR_IN_OPTION =
 		"ticktock = time --fixed-delay=| log";
 
+	public static final String DSL_COMMENTS_IN_MULTI =
+		"#\n" +
+		"-- @env env1\n" +
+		"-- @prop foo1=bar1\n" +
+		"#\n" +
+		"-- @name name\n" +
+		"-- @desc desc\n" +
+		"-- @env env1\n" +
+		"time|log\n" +
+		"#\n" +
+		"#\n" +
+		"\n" +
+		"-- @name name\n" +
+		"-- @desc desc\n" +
+		"-- @env env2\n" +
+		"time|log\n";
+
 	@Test
 	public void testMetadataWithoutStream() {
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
@@ -279,6 +296,19 @@ public class AbstractDataflowStreamLanguageServiceTests {
 		assertThat(result.get(0).getDefinitionItem().getEnvItem()).isNull();
 		assertThat(result.get(0).getDefinitionItem().getNameItem()).isNull();
 		assertThat(result.get(0).getDefinitionItem().getReconcileProblem()).isNotNull();
+	}
+
+	@Test
+	public void testCommensInMulti() {
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
+				DSL_COMMENTS_IN_MULTI);
+		List<StreamItem> result = service.parse(document).collectList().block();
+		assertThat(result).hasSize(2);
+		assertThat(result.get(0).getCommentRanges()).hasSize(2);
+		assertThat(result.get(0).getCommentRanges().get(0)).isEqualTo(Range.from(0, 0, 0, 1));
+		assertThat(result.get(0).getCommentRanges().get(1)).isEqualTo(Range.from(3, 0, 3, 1));
+		assertThat(result.get(1).getCommentRanges()).hasSize(1);
+		assertThat(result.get(1).getCommentRanges().get(0)).isEqualTo(Range.from(8, 0, 9, 1));
 	}
 
 	private static class TestDataflowStreamLanguageService extends AbstractDataflowStreamLanguageService {

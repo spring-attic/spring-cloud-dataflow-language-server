@@ -190,6 +190,8 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 		int lineCount = document.lineCount();
 		int start = previous != null ? previous.range.getEnd().getLine() + 1 : 0;
 		Range lineRange = null;
+		List<Range> commentRanges = new ArrayList<>();
+		Range commentRange = null;
 
 		for (int line = start; streamItem == null && line < lineCount; line++) {
 			lineRange = document.getLineRange(line);
@@ -220,6 +222,18 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 				descItem = null;
 				deploymentItemsStart = null;
 			} else {
+
+				if (trim.length() > 0 && trim.charAt(0) == '#') {
+					if (commentRange == null) {
+						commentRange = rangeFrom(lineRange);
+					} else {
+						commentRange = rangeExtend(commentRange, lineRange);
+					}
+				} else if (commentRange != null) {
+					commentRanges.add(commentRange);
+					commentRange = null;
+				}
+
 				if (trim.length() > 2 && (trim.charAt(0) == '#' || trim.charAt(0) == '-')) {
 					deploymentItemsEnd = lineRange.getEnd();
 					DeploymentItem item = new DeploymentItem();
@@ -275,6 +289,10 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 			streamItem = new StreamItem();
 			streamItem.definitionItem = definitionItem;
 			streamItem.range = Range.from(deploymentItemsStart, lineRange.getEnd());
+		}
+
+		if (streamItem != null) {
+			streamItem.getCommentRanges().addAll(commentRanges);
 		}
 
 		return streamItem;
@@ -390,6 +408,7 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 		private List<DeploymentItems> deployments = new ArrayList<>();
 		private DefinitionItem definitionItem;
 		private Range range;
+		private List<Range> commentRanges = new ArrayList<>();
 
 		public List<DeploymentItems> getDeployments() {
 			return deployments;
@@ -402,5 +421,19 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 		public Range getRange() {
 			return range;
 		}
+
+		public List<Range> getCommentRanges() {
+			return commentRanges;
+		}
+	}
+
+	private static Range rangeFrom(Range range) {
+		return Range.from(range.getStart().getLine(), range.getStart().getCharacter(), range.getEnd().getLine(),
+				range.getEnd().getCharacter());
+	}
+
+	private static Range rangeExtend(Range from, Range to) {
+		return Range.from(from.getStart().getLine(), from.getStart().getCharacter(), to.getEnd().getLine(),
+				to.getEnd().getCharacter());
 	}
 }

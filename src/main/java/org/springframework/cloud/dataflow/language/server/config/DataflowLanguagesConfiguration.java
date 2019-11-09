@@ -20,6 +20,7 @@ import org.springframework.cloud.dataflow.language.server.app.AppLanguageLinter;
 import org.springframework.cloud.dataflow.language.server.app.AppLanguageSymbolizer;
 import org.springframework.cloud.dataflow.language.server.controller.DataflowJsonRpcController;
 import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamLanguageCompletioner;
+import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamLanguageFolderer;
 import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamLanguageHoverer;
 import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamLanguageLenser;
 import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamLanguageLinter;
@@ -33,6 +34,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.dsl.lsp.server.support.JvmLspExiter;
 import org.springframework.dsl.lsp.server.support.LspExiter;
 import org.springframework.dsl.service.Completioner;
+import org.springframework.dsl.service.Folderer;
 import org.springframework.dsl.service.Hoverer;
 import org.springframework.dsl.service.Lenser;
 import org.springframework.dsl.service.reconcile.Linter;
@@ -74,6 +76,11 @@ public class DataflowLanguagesConfiguration {
     @Bean
     public Completioner dataflowStreamLanguageCompletioner() {
         return new DataflowStreamLanguageCompletioner();
+    }
+
+    @Bean
+    public Folderer dataflowStreamLanguageFolderer() {
+        return new DataflowStreamLanguageFolderer();
     }
 
     @Bean
