@@ -225,9 +225,9 @@ public abstract class AbstractStreamLanguageService extends AbstractDslService {
 
 				if (trim.length() > 0 && trim.charAt(0) == '#') {
 					if (commentRange == null) {
-						commentRange = rangeFrom(lineRange);
+						commentRange = Range.from(lineRange);
 					} else {
-						commentRange = rangeExtend(commentRange, lineRange);
+						commentRange = commentRange.extend(lineRange);
 					}
 				} else if (commentRange != null) {
 					commentRanges.add(commentRange);
@@ -425,15 +425,5 @@ public abstract class AbstractStreamLanguageService extends AbstractDslService {
 		public List<Range> getCommentRanges() {
 			return commentRanges;
 		}
-	}
-
-	private static Range rangeFrom(Range range) {
-		return Range.from(range.getStart().getLine(), range.getStart().getCharacter(), range.getEnd().getLine(),
-				range.getEnd().getCharacter());
-	}
-
-	private static Range rangeExtend(Range from, Range to) {
-		return Range.from(from.getStart().getLine(), from.getStart().getCharacter(), to.getEnd().getLine(),
-				to.getEnd().getCharacter());
 	}
 }
