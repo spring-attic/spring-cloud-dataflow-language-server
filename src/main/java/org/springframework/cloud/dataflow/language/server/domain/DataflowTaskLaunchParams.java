@@ -24,6 +24,29 @@ public class DataflowTaskLaunchParams extends DataflowTaskParams {
 	private List<String> arguments = Collections.emptyList();
 	private Map<String, String> properties = Collections.emptyMap();
 
+	public DataflowTaskLaunchParams() {
+	}
+
+	public DataflowTaskLaunchParams(String name, String server, Map<String, String> properties,
+			List<String> arguments) {
+		super(name, server);
+		if (properties != null) {
+			this.properties = properties;
+		}
+		if (arguments != null) {
+			this.arguments = arguments;
+		}
+	}
+
+	public static DataflowTaskLaunchParams from(String name, String server) {
+		return new DataflowTaskLaunchParams(name, server, null, null);
+	}
+
+	public static DataflowTaskLaunchParams from(String name, String server, Map<String, String> properties,
+			List<String> arguments) {
+		return new DataflowTaskLaunchParams(name, server, properties, arguments);
+	}
+
 	public Map<String, String> getProperties() {
 		return properties;
 	}

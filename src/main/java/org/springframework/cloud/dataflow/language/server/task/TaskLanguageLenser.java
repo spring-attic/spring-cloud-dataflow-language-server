@@ -25,6 +25,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.cloud.dataflow.core.dsl.TaskNode;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowTaskCreateParams;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowTaskDestroyParams;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowTaskLaunchParams;
 import org.springframework.dsl.document.DocumentText;
 import org.springframework.dsl.domain.CodeLens;
 import org.springframework.dsl.domain.Range;
@@ -53,10 +56,10 @@ public class TaskLanguageLenser extends AbstractTaskLanguageService implements L
 					.command()
 						.command(DataflowLanguages.COMMAND_TASK_LAUNCH)
 						.title(DataflowLanguages.COMMAND_TASK_LAUNCH_TITLE)
-						.argument(getTaskName(item))
-						.argument(getTaskEnvironment(deployment, item))
-						.argument(getDeploymentProperties(deployment.getItems()))
-						.argument(getCommandLineArgs(deployment.getArgItems()))
+						.argument(DataflowTaskLaunchParams.from(getTaskName(item),
+							getTaskEnvironment(deployment, item),
+							getDeploymentProperties(deployment.getItems()),
+							getCommandLineArgs(deployment.getArgItems())))
 						.and()
 					.build();
 			})
@@ -77,10 +80,8 @@ public class TaskLanguageLenser extends AbstractTaskLanguageService implements L
 				.command()
 					.command(DataflowLanguages.COMMAND_TASK_CREATE)
 					.title(DataflowLanguages.COMMAND_TASK_CREATE_TITLE)
-					.argument(taskName)
-					.argument(taskEnvironment)
-					.argument(taskDescription)
-					.argument(getDefinition(item.getDefinitionItem().getTaskNode()))
+					.argument(DataflowTaskCreateParams.from(taskName, taskEnvironment,
+						getDefinition(item.getDefinitionItem().getTaskNode()), taskDescription))
 					.and()
 				.build(),
 			CodeLens.codeLens()
@@ -88,8 +89,7 @@ public class TaskLanguageLenser extends AbstractTaskLanguageService implements L
 				.command()
 					.command(DataflowLanguages.COMMAND_TASK_DESTROY)
 					.title(DataflowLanguages.COMMAND_TASK_DESTROY_TITLE)
-					.argument(taskName)
-					.argument(taskEnvironment)
+					.argument(DataflowTaskDestroyParams.from(taskName, taskEnvironment))
 					.and()
 				.build(),
 			CodeLens.codeLens()
@@ -97,7 +97,7 @@ public class TaskLanguageLenser extends AbstractTaskLanguageService implements L
 				.command()
 					.command(DataflowLanguages.COMMAND_TASK_LAUNCH)
 					.title(DataflowLanguages.COMMAND_TASK_LAUNCH_TITLE)
-					.argument(item.getDefinitionItem().getTaskNode().getName())
+					.argument(DataflowTaskLaunchParams.from(taskName, taskEnvironment))
 					.and()
 				.build()
 		);

@@ -17,6 +17,17 @@ package org.springframework.cloud.dataflow.language.server.domain;
 
 public class DataflowTaskDestroyParams extends DataflowStreamParams {
 
+	public DataflowTaskDestroyParams() {
+	}
+
+	public DataflowTaskDestroyParams(String name, String server) {
+		super(name, server);
+	}
+
+	public static DataflowTaskDestroyParams from(String name, String server) {
+		return new DataflowTaskDestroyParams(name, server);
+	}
+
 	@Override
 	public String toString() {
 		return "DataflowTaskDestroyParams [name=" + getName() + ", server=" + getServer() + "]";

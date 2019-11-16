@@ -20,6 +20,19 @@ public class DataflowTaskCreateParams extends DataflowTaskParams {
 	private String definition;
 	private String description;
 
+	public DataflowTaskCreateParams() {
+	}
+
+	public DataflowTaskCreateParams(String name, String server, String definition, String description) {
+		super(name, server);
+		this.definition = definition;
+		this.description = description;
+	}
+
+	public static DataflowTaskCreateParams from(String name, String server, String definition, String description) {
+		return new DataflowTaskCreateParams(name, server, definition, description);
+	}
+
 	public String getDefinition() {
 		return definition;
 	}

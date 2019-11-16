@@ -20,6 +20,14 @@ public class DataflowTaskParams {
 	private String name;
 	private String server;
 
+	public DataflowTaskParams() {
+	}
+
+	public DataflowTaskParams(String name, String server) {
+		this.name = name;
+		this.server = server;
+	}
+
 	public String getName() {
 		return name;
 	}
