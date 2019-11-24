@@ -46,19 +46,24 @@ public class DataFlowOperationsService {
 		})
 		.build();
 
-	public DataFlowOperations getDataFlowOperations(Environment environment) {
-		return cache.get(environment, key -> buildDataFlowTemplate(key));
+	public DataFlowOperations getDataFlowOperations(Environment environment, Boolean trustssl) {
+		return cache.get(environment, key -> buildDataFlowTemplate(key, trustssl));
 	}
 
-	private DataFlowTemplate buildDataFlowTemplate(Environment environment) {
+	private DataFlowTemplate buildDataFlowTemplate(Environment environment, Boolean trustssl) {
 		log.debug("Building DataFlowTemplate for environment {}", environment);
 		URI uri = URI.create(environment.getUrl());
 		String username = environment.getCredentials().getUsername();
 		String password = environment.getCredentials().getPassword();
-		if (StringUtils.hasText(username) && StringUtils.hasText(password)) {
+		if ((StringUtils.hasText(username) && StringUtils.hasText(password)) || (trustssl != null && trustssl)) {
 			RestTemplate restTemplate = new RestTemplate();
 			HttpClientConfigurer httpClientConfigurer = HttpClientConfigurer.create(uri);
-			httpClientConfigurer.basicAuthCredentials(username, password);
+			if (StringUtils.hasText(username) && StringUtils.hasText(password)) {
+				httpClientConfigurer.basicAuthCredentials(username, password);
+			}
+			if (trustssl != null && trustssl) {
+				httpClientConfigurer.skipTlsCertificateVerification(true);
+			}
 			restTemplate.setRequestFactory(httpClientConfigurer.buildClientHttpRequestFactory());
 			return new DataFlowTemplate(uri, restTemplate);
 		} else {

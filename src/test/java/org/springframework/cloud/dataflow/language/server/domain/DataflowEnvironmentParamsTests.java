@@ -64,4 +64,15 @@ public class DataflowEnvironmentParamsTests {
 
 		assertThat(env1).isEqualTo(env2);
 	}
+
+	@Test
+	public void testMainParams() {
+		DataflowEnvironmentParams params1 = new DataflowEnvironmentParams();
+		params1.setTrustssl(true);
+		params1.setDefaultEnvironment("defaultEnvironment");
+		DataflowEnvironmentParams params2 = new DataflowEnvironmentParams();
+		params2.setTrustssl(true);
+		params2.setDefaultEnvironment("defaultEnvironment");
+		assertThat(params1).isEqualTo(params2);
+	}
 }

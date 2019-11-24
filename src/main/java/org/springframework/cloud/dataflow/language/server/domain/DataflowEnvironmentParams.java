@@ -24,6 +24,7 @@ public class DataflowEnvironmentParams {
 
     private List<Environment> environments = new ArrayList<>();
     private String defaultEnvironment;
+    private Boolean trustssl;
 
     public List<Environment> getEnvironments() {
         return environments;
@@ -41,9 +42,55 @@ public class DataflowEnvironmentParams {
         this.defaultEnvironment = defaultEnvironment;
     }
 
+    public Boolean getTrustssl() {
+        return trustssl;
+    }
+
+    public void setTrustssl(Boolean trustssl) {
+        this.trustssl = trustssl;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((defaultEnvironment == null) ? 0 : defaultEnvironment.hashCode());
+        result = prime * result + ((environments == null) ? 0 : environments.hashCode());
+        result = prime * result + ((trustssl == null) ? 0 : trustssl.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        DataflowEnvironmentParams other = (DataflowEnvironmentParams) obj;
+        if (defaultEnvironment == null) {
+            if (other.defaultEnvironment != null)
+                return false;
+        } else if (!defaultEnvironment.equals(other.defaultEnvironment))
+            return false;
+        if (environments == null) {
+            if (other.environments != null)
+                return false;
+        } else if (!environments.equals(other.environments))
+            return false;
+        if (trustssl == null) {
+            if (other.trustssl != null)
+                return false;
+        } else if (!trustssl.equals(other.trustssl))
+            return false;
+        return true;
+    }
+
     @Override
     public String toString() {
-        return "DataflowEnvironmentParams [" + environments + ", defaultEnvironment=" + defaultEnvironment + "]";
+        return "DataflowEnvironmentParams [defaultEnvironment=" + defaultEnvironment + ", environments=" + environments
+                + ", trustssl=" + trustssl + "]";
     }
 
     public static class Environment {

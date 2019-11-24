@@ -106,7 +106,7 @@ public abstract class AbstractStreamLanguageService extends AbstractDslService {
 		if (environment != null) {
 			try {
 				log.debug("Getting DataFlowTemplate for environment {}", defaultEnvironment);
-				return dataflowOperationsService.getDataFlowOperations(environment);
+				return dataflowOperationsService.getDataFlowOperations(environment, params.getTrustssl());
 			} catch (Exception e) {
 				return null;
 			}

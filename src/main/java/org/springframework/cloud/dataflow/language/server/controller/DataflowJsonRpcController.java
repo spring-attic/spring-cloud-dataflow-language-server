@@ -196,17 +196,22 @@ public class DataflowJsonRpcController {
 			.filter(e -> ObjectUtils.nullSafeEquals(e.getName(), server))
 			.findAny()
 			.orElse(null);
-		return buildDataFlowTemplate(environment);
+		return buildDataFlowTemplate(environment, params.getTrustssl());
 	}
 
-	private DataFlowTemplate buildDataFlowTemplate(Environment environment) {
+	private DataFlowTemplate buildDataFlowTemplate(Environment environment, Boolean trustssl) {
 		URI uri = URI.create(environment.getUrl());
 		String username = environment.getCredentials().getUsername();
 		String password = environment.getCredentials().getPassword();
-		if (StringUtils.hasText(username) && StringUtils.hasText(password)) {
+		if ((StringUtils.hasText(username) && StringUtils.hasText(password)) || (trustssl != null && trustssl)) {
 			RestTemplate restTemplate = new RestTemplate();
 			HttpClientConfigurer httpClientConfigurer = HttpClientConfigurer.create(uri);
-			httpClientConfigurer.basicAuthCredentials(username, password);
+			if (StringUtils.hasText(username) && StringUtils.hasText(password)) {
+				httpClientConfigurer.basicAuthCredentials(username, password);
+			}
+			if (trustssl != null && trustssl) {
+				httpClientConfigurer.skipTlsCertificateVerification(true);
+			}
 			restTemplate.setRequestFactory(httpClientConfigurer.buildClientHttpRequestFactory());
 			return new DataFlowTemplate(uri, restTemplate);
 		} else {
