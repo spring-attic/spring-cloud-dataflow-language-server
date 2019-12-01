@@ -42,7 +42,7 @@ public class StreamLanguageCompletioner extends AbstractStreamLanguageService im
 			if (dataFlowOperations == null) {
 				return Flux.empty();
 			}
-			Range prefixRange = Range.from(position.getLine(), 0, position.getLine(), position.getCharacter());
+			final Range prefixRange = Range.from(position.getLine(), 0, position.getLine(), position.getCharacter());
 			String prefix = context.getDocument().content(prefixRange).toString();
 			log.trace("Start of complete request scdf");
 			CompletionProposalsResource proposals = dataFlowOperations.completionOperations()
@@ -59,7 +59,7 @@ public class StreamLanguageCompletioner extends AbstractStreamLanguageService im
 						// need to have filter as it defaults to label and we changed it and it doesn't match newText
 						.filterText(proposal.getText())
 						.textEdit()
-							.range(Range.from(position.getLine(), 0, position.getLine(), position.getCharacter()))
+							.range(prefixRange)
 							.newText(proposal.getText())
 							.and()
 						.build();
