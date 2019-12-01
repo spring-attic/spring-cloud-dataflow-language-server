@@ -50,7 +50,7 @@ public class StreamLanguageLinterTests {
 
 	@Test
 	public void testJustOneApp() {
-		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, "foo");
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, "name = foo");
 		List<ReconcileProblem> problems = linter.lint(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
 		assertThat(problems).isEmpty();
@@ -61,13 +61,13 @@ public class StreamLanguageLinterTests {
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, "stream = :aaa > fff||bbb");
 		List<ReconcileProblem> problems = linter.lint(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
-		assertThat(problems).hasSize(1);
-		ReconcileProblem problem = problems.get(0);
-		assertThat(problem.getMessage()).contains("do not use || between source/processor/sink apps in a stream");
-		assertThat(problem.getRange().getStart().getLine()).isEqualTo(0);
-		assertThat(problem.getRange().getStart().getCharacter()).isEqualTo(19);
-		assertThat(problem.getRange().getEnd().getLine()).isEqualTo(0);
-		assertThat(problem.getRange().getEnd().getCharacter()).isEqualTo(19);
+		assertThat(problems).hasSize(2);
+		assertThat(problems.get(0).getMessage()).contains("do not use || between source/processor/sink apps in a stream");
+		assertThat(problems.get(0).getRange().getStart().getLine()).isEqualTo(0);
+		assertThat(problems.get(0).getRange().getStart().getCharacter()).isEqualTo(19);
+		assertThat(problems.get(0).getRange().getEnd().getLine()).isEqualTo(0);
+		assertThat(problems.get(0).getRange().getEnd().getCharacter()).isEqualTo(19);
+		assertThat(problems.get(1).getMessage()).contains("missing");
 	}
 
 	@Test
@@ -97,5 +97,14 @@ public class StreamLanguageLinterTests {
 		List<ReconcileProblem> problems = linter.lint(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
 		assertThat(problems).hasSize(0);
+	}
+
+	@Test
+	public void testDslWithoutName() {
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
+				AbstractStreamLanguageServiceTests.DSL_WITHOUT_NAME);
+		List<ReconcileProblem> problems = linter.lint(DslContext.builder().document(document).build()).toStream()
+				.collect(Collectors.toList());
+		assertThat(problems).hasSize(1);
 	}
 }

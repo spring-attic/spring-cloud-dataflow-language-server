@@ -39,6 +39,9 @@ public class AbstractStreamLanguageServiceTests {
 		service.setDataflowOperationsService(new DataFlowOperationsService());
 	}
 
+	public static final String DSL_WITHOUT_NAME =
+		"time|log";
+
 	public static final String DSL_ONE_MULTI_ENV =
 		"-- @env env1\n" +
 		"-- @prop foo1=bar1\n" +
@@ -309,6 +312,15 @@ public class AbstractStreamLanguageServiceTests {
 		assertThat(result.get(0).getCommentRanges().get(1)).isEqualTo(Range.from(3, 0, 3, 1));
 		assertThat(result.get(1).getCommentRanges()).hasSize(1);
 		assertThat(result.get(1).getCommentRanges().get(0)).isEqualTo(Range.from(8, 0, 9, 1));
+	}
+
+
+	@Test
+	public void testDslWithoutName() {
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, DSL_WITHOUT_NAME);
+		List<StreamItem> result = service.parse(document).collectList().block();
+		assertThat(result).hasSize(1);
+		assertThat(result.get(0).getDefinitionItem().getReconcileProblem()).isNull();
 	}
 
 	private static class TestStreamLanguageService extends AbstractStreamLanguageService {

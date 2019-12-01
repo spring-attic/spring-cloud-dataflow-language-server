@@ -16,11 +16,14 @@
 package org.springframework.cloud.dataflow.language.server.stream;
 
 import org.springframework.dsl.service.DslContext;
+import org.springframework.dsl.service.reconcile.DefaultReconcileProblem;
 import org.springframework.dsl.service.reconcile.Linter;
 import org.springframework.dsl.service.reconcile.ReconcileProblem;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Component
 public class StreamLanguageLinter extends AbstractStreamLanguageService implements Linter {
@@ -28,7 +31,25 @@ public class StreamLanguageLinter extends AbstractStreamLanguageService implemen
 	@Override
 	public Flux<ReconcileProblem> lint(DslContext context) {
 		return parse(context.getDocument())
-			.filter(item -> item.getDefinitionItem().getReconcileProblem() != null)
-			.map(item -> item.getDefinitionItem().getReconcileProblem());
+			.flatMap(item -> Flux.concat(definitionProblem(item), nameProblem(item)));
+	}
+
+	private Mono<ReconcileProblem> definitionProblem(StreamItem item) {
+		return Mono.justOrEmpty(item.getDefinitionItem().getReconcileProblem());
+	}
+
+	private Mono<ReconcileProblem> nameProblem(StreamItem item) {
+		ReconcileProblem problem = null;
+		String streamName = null;
+		if (item.getDefinitionItem() != null && item.getDefinitionItem().getStreamNode() != null) {
+			streamName = item.getDefinitionItem().getStreamNode().getStreamName();
+		}
+		if (!StringUtils.hasText(streamName)) {
+			DeploymentItem nameItem = item.getDefinitionItem().getNameItem();
+			if (nameItem == null || (nameItem != null && nameItem.getText().length() < 1)) {
+				problem = new DefaultReconcileProblem(new ErrorProblemType(""), "Stream name missing", item.getRange());
+			}
+		}
+		return Mono.justOrEmpty(problem);
 	}
 }
