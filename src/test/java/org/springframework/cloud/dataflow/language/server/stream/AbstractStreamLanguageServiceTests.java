@@ -42,6 +42,9 @@ public class AbstractStreamLanguageServiceTests {
 	public static final String DSL_WITHOUT_NAME =
 		"time|log";
 
+	public static final String DSL_FULL_NOPROPS_WITH_LABELS =
+		"stream=l1:time|l2:processor|l3:log";
+
 	public static final String DSL_ONE_MULTI_ENV =
 		"-- @env env1\n" +
 		"-- @prop foo1=bar1\n" +
@@ -88,6 +91,19 @@ public class AbstractStreamLanguageServiceTests {
 		"-- @desc desc\n" +
 		"-- @env env2\n" +
 		"time|log\n";
+
+	public static final String DSL_TAPS_LINKING =
+		"main = time | transform | log\n" +
+		"tap2 = :main.time > filter | log\n" +
+		"tap1 = :main.transform > scriptable-transform | log\n" +
+		"tap3 = :tap1.scriptable-transform > filter | log\n";
+
+	public static final String DSL_TAPS_LINKING_WITH_META =
+		"-- @name main\n" +
+		"main = time | transform | log\n" +
+		"tap2 = :main.time > filter | log\n" +
+		"tap1 = :main.transform > scriptable-transform | log\n" +
+		"tap3 = :tap1.scriptable-transform > filter | log\n";
 
 	@Test
 	public void testMetadataWithoutStream() {

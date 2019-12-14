@@ -89,17 +89,12 @@ public class StreamLanguageSymbolizer extends AbstractStreamLanguageService impl
 		Mono<SymbolizeInfo> symbolizeInfo = parse(context.getDocument())
 			.collectList()
 			.map(items -> buildTable(items))
-			.map(table -> {
-				DocumentSymbolTableVisitor visitor = new DocumentSymbolTableVisitor(context.getDocument().uri());
-				visitor.setSymbolQuery(new SymbolQuery(query));
-				table.visitSymbolTable(visitor);
-				return visitor;
-			})
+			.map(table -> table.visitSymbolTable(DocumentSymbolTableVisitor.from(context.getDocument().uri(), new SymbolQuery(query))))
 			.map(visitor -> visitor.getSymbolizeInfo());
 		return DslUtils.symbolizeInfoFromMono(symbolizeInfo);
 	}
 
-	private static SymbolTable buildTable(List<StreamItem> items) {
+	public static SymbolTable buildTable(List<StreamItem> items) {
 		DefaultSymbolTable table = new DefaultSymbolTable();
 		for (StreamItem item : items) {
 			StreamNode streamNode = item.getDefinitionItem().getStreamNode();
@@ -111,24 +106,65 @@ public class StreamLanguageSymbolizer extends AbstractStreamLanguageService impl
 			int endPos = streamNode.getEndPos();
 			String streamName = getStreamName(item);
 
-			LocalScope streamScope = new LocalScope(table.getGlobalScope());
-			table.getGlobalScope().nest(streamScope);
+			LocalScope mainScope = new LocalScope(table.getGlobalScope());
+			LocalScope metaScope = new LocalScope(mainScope);
+			mainScope.nest(metaScope);
+			LocalScope streamScope = new LocalScope(mainScope);
+			mainScope.nest(streamScope);
+			table.getGlobalScope().nest(mainScope);
 
 			StreamSymbol streamClass = new StreamSymbol(streamName != null ? streamName : "[unnamed]");
+			streamClass.setDetail("dsl");
 			streamClass.setRange(Range.from(line, startPos, line, endPos));
 			streamScope.define(streamClass);
 
+			Range nameRange = item.getDefinitionItem().getNameRange();
+			if (nameRange != null) {
+				StreamNameNativeSymbol streamNameClass = new StreamNameNativeSymbol(streamName != null ? streamName : "[unnamed]");
+				streamNameClass.setDetail("name");
+				streamNameClass.setRange(nameRange);
+				streamClass.define(streamNameClass);
+			}
+			if (item.getDefinitionItem().getNameItem() != null) {
+				Range contentRange = item.getDefinitionItem().getNameItem().getContentRange();
+				String name = item.getDefinitionItem().getNameItem().getText()
+						.subtext(contentRange.getStart().getCharacter() + 6, contentRange.getEnd().getCharacter())
+						.toString();
+				StreamNameMetaSymbol streamNameClass = new StreamNameMetaSymbol(name != null ? name : "[unnamed]");
+				streamNameClass.setDetail("@name");
+				streamNameClass.setRange(
+						Range.from(contentRange.getStart().getLine(), contentRange.getStart().getCharacter() + 6,
+								contentRange.getEnd().getLine(), contentRange.getEnd().getCharacter()));
+				metaScope.define(streamNameClass);
+			}
+
+			boolean hasSourceDestination = streamNode.getSourceDestinationNode() != null;
 			for (int i = 0; i < streamNode.getAppNodes().size(); i++) {
 				AppNode appNode = streamNode.getAppNodes().get(i);
 				String appName = appNode.getName();
 				ClassSymbol appClass;
-				if (i == 0) {
-					appClass = new SourceSymbol(appName);
-				} else if (i == streamNode.getAppNodes().size() - 1) {
-					appClass = new SinkSymbol(appName);
+
+				if (hasSourceDestination) {
+					if (i == streamNode.getAppNodes().size() - 1) {
+						appClass = new SinkSymbol(appName);
+						appClass.setDetail("sink");
+					} else {
+						appClass = new ProcessorSymbol(appName);
+						appClass.setDetail("processor");
+					}
 				} else {
-					appClass = new ProcessorSymbol(appName);
+					if (i == 0) {
+						appClass = new SourceSymbol(appName);
+						appClass.setDetail("source");
+					} else if (i == streamNode.getAppNodes().size() - 1) {
+						appClass = new SinkSymbol(appName);
+						appClass.setDetail("sink");
+					} else {
+						appClass = new ProcessorSymbol(appName);
+						appClass.setDetail("processor");
+					}
 				}
+
 				appClass.setRange(Range.from(line, appNode.getStartPos(), line, appNode.getEndPos()));
 				streamClass.define(appClass);
 				for (ArgumentNode argumentNode : appNode.getArguments()) {
@@ -203,10 +239,6 @@ public class StreamLanguageSymbolizer extends AbstractStreamLanguageService impl
 		}
 	}
 
-	public static class StreamBlock {
-
-	}
-
 	public static class StreamSymbol extends ClassSymbol {
 
 		StreamSymbol(String name) {
@@ -219,6 +251,47 @@ public class StreamLanguageSymbolizer extends AbstractStreamLanguageService impl
 		}
 	}
 
+	/**
+	 * Stream name symbol which would be {@code streamName} in
+	 * {@code streamName=source|processor|sink} with range matching
+	 * {@code streamName}.
+	 */
+	public static class StreamNameNativeSymbol extends ClassSymbol {
+
+		StreamNameNativeSymbol(String name) {
+			super(name);
+		}
+
+		@Override
+		public SymbolKind getKind() {
+			return SymbolKind.Class;
+		}
+	}
+
+	/**
+	 * Stream name meta symbol which would be {@code streamName} in
+	 * a below text.
+	 * <pre>
+	 * -- @name streamName
+	 * source|sink
+	 * <pre>
+	 */
+	public static class StreamNameMetaSymbol extends ClassSymbol {
+
+		StreamNameMetaSymbol(String name) {
+			super(name);
+		}
+
+		@Override
+		public SymbolKind getKind() {
+			return SymbolKind.Class;
+		}
+	}
+
+	/**
+	 * Stream source symbol which would be {@code source} in
+	 * {@code source|processor|sink} with range matching source type.
+	 */
 	public static class SourceSymbol extends ClassSymbol {
 
 		SourceSymbol(String name) {

@@ -194,7 +194,7 @@ public abstract class AbstractStreamLanguageService extends AbstractDslService {
 			DocumentText lineContent = document.content(lineRange);
 			DocumentText trim = lineContent.trimStart();
 			if (trim.hasText() && Character.isLetterOrDigit(trim.charAt(0))) {
-				DefinitionItem definitionItem = parseDefinition(lineContent);
+				DefinitionItem definitionItem = parseDefinition(lineContent, line);
 				definitionItem.range = lineRange;
 				definitionItem.envItem = envItem;
 				definitionItem.nameItem = nameItem;
@@ -311,15 +311,22 @@ public abstract class AbstractStreamLanguageService extends AbstractDslService {
 		return -1;
 	}
 
-	private DefinitionItem parseDefinition(DocumentText text) {
+	private DefinitionItem parseDefinition(DocumentText text, int line) {
 		DefinitionItem definitionItem = new DefinitionItem();
 		try {
 			StreamParser parser = new StreamParser(text.toString());
 			definitionItem.streamNode = parser.parse();
+			String parsedName = definitionItem.streamNode.getStreamName();
+			if (StringUtils.hasText(parsedName)) {
+				int index = text.indexOf(parsedName);
+				if (index > -1) {
+					definitionItem.nameRange = Range.from(line, index, line, index + parsedName.length());
+				}
+			}
 		} catch (ParseException e) {
 			String message = e.getMessage();
 			int position = e.getPosition();
-			Range range = Range.from(0, position, 0, position);
+			Range range = Range.from(line, position, line, position);
 			DefaultReconcileProblem problem = new DefaultReconcileProblem(new ErrorProblemType(""), message, range);
 			definitionItem.reconcileProblem = problem;
 		}
@@ -370,6 +377,7 @@ public abstract class AbstractStreamLanguageService extends AbstractDslService {
 	public static class DefinitionItem {
 		private StreamNode streamNode;
 		private Range range;
+		private Range nameRange;
 		private ReconcileProblem reconcileProblem;
 		private DeploymentItem envItem;
 		private DeploymentItem nameItem;
@@ -381,6 +389,10 @@ public abstract class AbstractStreamLanguageService extends AbstractDslService {
 
 		public Range getRange() {
 			return range;
+		}
+
+		public Range getNameRange() {
+			return nameRange;
 		}
 
 		public ReconcileProblem getReconcileProblem() {
