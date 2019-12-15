@@ -18,8 +18,11 @@ package org.springframework.cloud.dataflow.language.server.stream;
 import java.util.List;
 import java.util.function.Function;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.dataflow.core.dsl.AppNode;
 import org.springframework.cloud.dataflow.core.dsl.ArgumentNode;
+import org.springframework.cloud.dataflow.core.dsl.SourceDestinationNode;
 import org.springframework.cloud.dataflow.core.dsl.StreamNode;
 import org.springframework.dsl.domain.Range;
 import org.springframework.dsl.domain.SymbolKind;
@@ -74,6 +77,8 @@ import reactor.core.publisher.Mono;
  */
 @Component
 public class StreamLanguageSymbolizer extends AbstractStreamLanguageService implements Symbolizer {
+
+	private static final Logger log = LoggerFactory.getLogger(StreamLanguageSymbolizer.class);
 
 	@Override
 	public SymbolizeInfo symbolize(DslContext context) {
@@ -138,7 +143,8 @@ public class StreamLanguageSymbolizer extends AbstractStreamLanguageService impl
 				metaScope.define(streamNameClass);
 			}
 
-			boolean hasSourceDestination = streamNode.getSourceDestinationNode() != null;
+			SourceDestinationNode sourceDestinationNode = streamNode.getSourceDestinationNode();
+			boolean hasSourceDestination = sourceDestinationNode != null;
 			for (int i = 0; i < streamNode.getAppNodes().size(); i++) {
 				AppNode appNode = streamNode.getAppNodes().get(i);
 				String appName = appNode.getName();
@@ -171,6 +177,28 @@ public class StreamLanguageSymbolizer extends AbstractStreamLanguageService impl
 					StreamAppOptionSymbol argumentClass = new StreamAppOptionSymbol(argumentNode.getName());
 					argumentClass.setRange(Range.from(line, argumentNode.getStartPos(), line, argumentNode.getEndPos()));
 					appClass.define(argumentClass);
+				}
+			}
+
+			if (sourceDestinationNode != null) {
+				// TODO: this is a bit of a hack, needs overhaul
+				String streamText = streamNode.getStreamText();
+				int startPos2 = sourceDestinationNode.getDestinationNode().getStartPos();
+				int endPos2 = sourceDestinationNode.getDestinationNode().getEndPos();
+				String destText = streamText.substring(startPos2, endPos2);
+				String[] split = destText.split("\\.");
+				if (split.length == 2) {
+					LocalScope sourceDestScope = new LocalScope(streamScope);
+					streamScope.nest(sourceDestScope);
+					ClassSymbol streamRefSymbol = new ClassSymbol(split[0]);
+					streamRefSymbol.setDetail("ref");
+					streamRefSymbol.setRange(Range.from(line, startPos2, line, startPos2 + split[0].length()));
+					ClassSymbol appRefSymbol = new ClassSymbol(split[1]);
+					appRefSymbol.setDetail("ref");
+					appRefSymbol.setRange(Range.from(line, endPos2 - split[1].length(), line, endPos2));
+					streamClass.define(streamRefSymbol);
+					streamClass.define(appRefSymbol);
+					log.debug("Created refs for sourceDestinationNode {} {}", streamRefSymbol, appRefSymbol);
 				}
 			}
 		}

@@ -77,6 +77,7 @@ public class StreamLanguageRenamer extends AbstractStreamLanguageService impleme
 	private static Optional<? extends Symbol> findSymbol(SymbolTable table, Position position) {
 		// find symbol for position
 		return table.getAllSymbols().stream()
+			.filter(s -> !(s instanceof StreamSymbol))
 			.filter(symbol -> DslUtils.isPositionInRange(position, symbol.getRange()))
 			.findFirst();
 	}

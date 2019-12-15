@@ -248,7 +248,7 @@ public class StreamLanguageSymbolizerTests {
 				.collect(Collectors.toList());
 		List<DocumentSymbol> documentSymbols = symbolizeInfo.documentSymbols().toStream().collect(Collectors.toList());
 
-		assertThat(symbolInformations).hasSize(17);
+		assertThat(symbolInformations).hasSize(23);
 		assertThat(documentSymbols).hasSize(4);
 
 		assertThat(documentSymbols.get(0).getName()).isEqualTo("main");
@@ -268,7 +268,7 @@ public class StreamLanguageSymbolizerTests {
 				.collect(Collectors.toList());
 		List<DocumentSymbol> documentSymbols = symbolizeInfo.documentSymbols().toStream().collect(Collectors.toList());
 
-		assertThat(symbolInformations).hasSize(18);
+		assertThat(symbolInformations).hasSize(24);
 		assertThat(documentSymbols).hasSize(5);
 
 		assertThat(documentSymbols.get(0).getName()).isEqualTo("main");
@@ -289,29 +289,41 @@ public class StreamLanguageSymbolizerTests {
 
 		assertThat(documentSymbols.get(2).getName()).isEqualTo("tap2");
 		assertThat(documentSymbols.get(2).getDetail()).isEqualTo("dsl");
-		assertThat(documentSymbols.get(2).getChildren()).hasSize(3);
+		assertThat(documentSymbols.get(2).getChildren()).hasSize(5);
 		assertThat(documentSymbols.get(2).getChildren().get(0).getName()).isEqualTo("tap2");
-		assertThat(documentSymbols.get(3).getChildren().get(0).getDetail()).isEqualTo("name");
+		assertThat(documentSymbols.get(2).getChildren().get(0).getDetail()).isEqualTo("name");
 		assertThat(documentSymbols.get(2).getChildren().get(1).getName()).isEqualTo("filter");
-		assertThat(documentSymbols.get(3).getChildren().get(1).getDetail()).isEqualTo("processor");
+		assertThat(documentSymbols.get(2).getChildren().get(1).getDetail()).isEqualTo("processor");
 		assertThat(documentSymbols.get(2).getChildren().get(2).getName()).isEqualTo("log");
-		assertThat(documentSymbols.get(3).getChildren().get(2).getDetail()).isEqualTo("sink");
+		assertThat(documentSymbols.get(2).getChildren().get(2).getDetail()).isEqualTo("sink");
+		assertThat(documentSymbols.get(2).getChildren().get(3).getName()).isEqualTo("main");
+		assertThat(documentSymbols.get(2).getChildren().get(3).getDetail()).isEqualTo("ref");
+		assertThat(documentSymbols.get(2).getChildren().get(4).getName()).isEqualTo("time");
+		assertThat(documentSymbols.get(2).getChildren().get(4).getDetail()).isEqualTo("ref");
 
 		assertThat(documentSymbols.get(3).getName()).isEqualTo("tap1");
 		assertThat(documentSymbols.get(3).getDetail()).isEqualTo("dsl");
-		assertThat(documentSymbols.get(3).getChildren()).hasSize(3);
+		assertThat(documentSymbols.get(3).getChildren()).hasSize(5);
 		assertThat(documentSymbols.get(3).getChildren().get(0).getName()).isEqualTo("tap1");
 		assertThat(documentSymbols.get(3).getChildren().get(0).getDetail()).isEqualTo("name");
 		assertThat(documentSymbols.get(3).getChildren().get(1).getName()).isEqualTo("scriptable-transform");
 		assertThat(documentSymbols.get(3).getChildren().get(1).getDetail()).isEqualTo("processor");
 		assertThat(documentSymbols.get(3).getChildren().get(2).getName()).isEqualTo("log");
 		assertThat(documentSymbols.get(3).getChildren().get(2).getDetail()).isEqualTo("sink");
+		assertThat(documentSymbols.get(3).getChildren().get(3).getName()).isEqualTo("main");
+		assertThat(documentSymbols.get(3).getChildren().get(3).getDetail()).isEqualTo("ref");
+		assertThat(documentSymbols.get(3).getChildren().get(4).getName()).isEqualTo("transform");
+		assertThat(documentSymbols.get(3).getChildren().get(4).getDetail()).isEqualTo("ref");
 
 		assertThat(documentSymbols.get(4).getName()).isEqualTo("tap3");
 		assertThat(documentSymbols.get(4).getDetail()).isEqualTo("dsl");
-		assertThat(documentSymbols.get(4).getChildren()).hasSize(3);
+		assertThat(documentSymbols.get(4).getChildren()).hasSize(5);
 		assertThat(documentSymbols.get(4).getChildren().get(0).getName()).isEqualTo("tap3");
 		assertThat(documentSymbols.get(4).getChildren().get(1).getName()).isEqualTo("filter");
 		assertThat(documentSymbols.get(4).getChildren().get(2).getName()).isEqualTo("log");
+		assertThat(documentSymbols.get(4).getChildren().get(3).getName()).isEqualTo("tap1");
+		assertThat(documentSymbols.get(4).getChildren().get(3).getDetail()).isEqualTo("ref");
+		assertThat(documentSymbols.get(4).getChildren().get(4).getName()).isEqualTo("scriptable-transform");
+		assertThat(documentSymbols.get(4).getChildren().get(4).getDetail()).isEqualTo("ref");
 	}
 }

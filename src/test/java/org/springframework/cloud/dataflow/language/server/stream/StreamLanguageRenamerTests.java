@@ -48,9 +48,7 @@ public class StreamLanguageRenamerTests {
 				.rename(DslContext.builder().document(document).build(), Position.from(0, 1), "newName").block();
 		assertThat(edit).isNotNull();
 		assertThat(edit.getDocumentChangesTextDocumentEdits()).hasSize(1);
-		assertThat(edit.getDocumentChangesTextDocumentEdits().get(0).getEdits()).hasSize(1);
-		// TODO: need to do tap source support, commented lines are for that!
-		// assertThat(edit.getDocumentChangesTextDocumentEdits().get(0).getEdits()).hasSize(3);
+		assertThat(edit.getDocumentChangesTextDocumentEdits().get(0).getEdits()).hasSize(3);
 
 		TextEdit edit1 = TextEdit.textEdit()
 			.newText("newName")
@@ -58,17 +56,17 @@ public class StreamLanguageRenamerTests {
 			.build();
 		assertThat(edit.getDocumentChangesTextDocumentEdits().get(0).getEdits().get(0)).isEqualTo(edit1);
 
-		// TextEdit edit2 = TextEdit.textEdit()
-		// 	.newText("newName")
-		// 	.range(Range.from(1, 8, 1, 12))
-		// 	.build();
-		// assertThat(edit.getDocumentChangesTextDocumentEdits().get(0).getEdits().get(1)).isEqualTo(edit2);
+		TextEdit edit2 = TextEdit.textEdit()
+			.newText("newName")
+			.range(Range.from(1, 8, 1, 12))
+			.build();
+		assertThat(edit.getDocumentChangesTextDocumentEdits().get(0).getEdits().get(1)).isEqualTo(edit2);
 
-		// TextEdit edit3 = TextEdit.textEdit()
-		// 	.newText("newName")
-		// 	.range(Range.from(2, 8, 2, 12))
-		// 	.build();
-		// assertThat(edit.getDocumentChangesTextDocumentEdits().get(0).getEdits().get(2)).isEqualTo(edit3);
+		TextEdit edit3 = TextEdit.textEdit()
+			.newText("newName")
+			.range(Range.from(2, 8, 2, 12))
+			.build();
+		assertThat(edit.getDocumentChangesTextDocumentEdits().get(0).getEdits().get(2)).isEqualTo(edit3);
 	}
 
     @Test
@@ -79,10 +77,25 @@ public class StreamLanguageRenamerTests {
 				.rename(DslContext.builder().document(document).build(), Position.from(0, 10), "newName").block();
 		assertThat(edit).isNotNull();
 		assertThat(edit.getDocumentChangesTextDocumentEdits()).hasSize(1);
-		assertThat(edit.getDocumentChangesTextDocumentEdits().get(0).getEdits()).hasSize(2);
+		assertThat(edit.getDocumentChangesTextDocumentEdits().get(0).getEdits()).hasSize(4);
 		assertThat(edit.getDocumentChangesTextDocumentEdits().get(0).getEdits().get(0).getRange())
 				.isEqualTo(Range.from(0, 9, 0, 13));
 		assertThat(edit.getDocumentChangesTextDocumentEdits().get(0).getEdits().get(1).getRange())
 				.isEqualTo(Range.from(1, 0, 1, 4));
+	}
+
+    @Test
+	public void testTapsLinkingWithMetaRenameTimeSource() {
+        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
+				AbstractStreamLanguageServiceTests.DSL_TAPS_LINKING_WITH_META);
+		WorkspaceEdit edit = renamer
+				.rename(DslContext.builder().document(document).build(), Position.from(1, 10), "newName").block();
+		assertThat(edit).isNotNull();
+		assertThat(edit.getDocumentChangesTextDocumentEdits()).hasSize(1);
+		assertThat(edit.getDocumentChangesTextDocumentEdits().get(0).getEdits()).hasSize(2);
+		assertThat(edit.getDocumentChangesTextDocumentEdits().get(0).getEdits().get(0).getRange())
+				.isEqualTo(Range.from(1, 7, 1, 11));
+		assertThat(edit.getDocumentChangesTextDocumentEdits().get(0).getEdits().get(1).getRange())
+				.isEqualTo(Range.from(2, 13, 2, 17));
 	}
 }
