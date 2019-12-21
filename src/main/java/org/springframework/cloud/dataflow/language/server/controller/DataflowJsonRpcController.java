@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
 import org.springframework.cloud.dataflow.language.server.domain.DataflowEnvironmentParams;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowResponse;
 import org.springframework.cloud.dataflow.language.server.domain.DataflowEnvironmentParams.Environment;
 import org.springframework.cloud.dataflow.language.server.domain.DataflowStreamCreateParams;
 import org.springframework.cloud.dataflow.language.server.domain.DataflowStreamDeployParams;
@@ -37,6 +38,7 @@ import org.springframework.cloud.dataflow.rest.util.HttpClientConfigurer;
 import org.springframework.dsl.jsonrpc.annotation.JsonRpcNotification;
 import org.springframework.dsl.jsonrpc.annotation.JsonRpcRequestMapping;
 import org.springframework.dsl.jsonrpc.annotation.JsonRpcRequestParams;
+import org.springframework.dsl.jsonrpc.annotation.JsonRpcResponseResult;
 import org.springframework.dsl.jsonrpc.session.JsonRpcSession;
 import org.springframework.dsl.lsp.client.LspClient;
 import org.springframework.dsl.service.DslContext;
@@ -77,115 +79,131 @@ public class DataflowJsonRpcController {
 	}
 
 	@JsonRpcRequestMapping(method = "createStream")
-	@JsonRpcNotification
-	public Mono<Void> createStream(@JsonRpcRequestParams DataflowStreamCreateParams params, JsonRpcSession session,
+	@JsonRpcResponseResult
+	public Mono<DataflowResponse> createStream(@JsonRpcRequestParams DataflowStreamCreateParams params, JsonRpcSession session,
 			LspClient lspClient) {
 		return Mono.fromRunnable(() -> {
-			log.debug("Client sending stream create request, params {}", params);
-			DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
-			if (operations != null) {
-				log.debug("Creating stream {}", params);
-				operations.streamOperations().createStream(params.getName(), params.getDefinition(), params.getDescription(), false);
-			} else {
-				log.info("Unable to create stream");
-			}
-		}).then(lspClient.notification().method("scdf/createdStream").exchange());
+				log.debug("Client sending stream create request, params {}", params);
+				DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
+				if (operations != null) {
+					log.debug("Creating stream {}", params);
+					operations.streamOperations().createStream(params.getName(), params.getDefinition(),
+						params.getDescription(), false);
+				} else {
+					log.info("Unable to create stream");
+				}
+			})
+			.then(Mono.just(DataflowResponse.ok(String.format("Stream %s created", params.getName()))))
+			.onErrorReturn(DataflowResponse.error(String.format("Stream %s create failed", params.getName())));
 	}
 
 	@JsonRpcRequestMapping(method = "deployStream")
 	@JsonRpcNotification
-	public Mono<Void> deployStream(@JsonRpcRequestParams DataflowStreamDeployParams params, JsonRpcSession session,
+	public Mono<DataflowResponse> deployStream(@JsonRpcRequestParams DataflowStreamDeployParams params, JsonRpcSession session,
 			LspClient lspClient) {
 		return Mono.fromRunnable(() -> {
-			log.debug("Client sending stream deploy request, params {}", params);
-			DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
-			if (operations != null) {
-				log.debug("Deploying stream {}", params);
-				operations.streamOperations().deploy(params.getName(), params.getProperties());
-			} else {
-				log.info("Unable to deploy stream");
-			}
-		}).then(lspClient.notification().method("scdf/deployedStream").exchange());
+				log.debug("Client sending stream deploy request, params {}", params);
+				DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
+				if (operations != null) {
+					log.debug("Deploying stream {}", params);
+					operations.streamOperations().deploy(params.getName(), params.getProperties());
+				} else {
+					log.info("Unable to deploy stream");
+				}
+			})
+			.then(Mono.just(DataflowResponse.ok(String.format("Stream %s deployed", params.getName()))))
+			.onErrorReturn(DataflowResponse.error(String.format("Stream %s deploy failed", params.getName())));
 	}
 
 	@JsonRpcRequestMapping(method = "undeployStream")
 	@JsonRpcNotification
-	public Mono<Void> undeployStream(@JsonRpcRequestParams DataflowStreamUndeployParams params, JsonRpcSession session,
+	public Mono<DataflowResponse> undeployStream(@JsonRpcRequestParams DataflowStreamUndeployParams params, JsonRpcSession session,
 			LspClient lspClient) {
 		return Mono.fromRunnable(() -> {
-			log.debug("Client sending stream create request, params {}", params);
-			DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
-			if (operations != null) {
-				log.debug("Undeploying stream {}", params);
-				operations.streamOperations().undeploy(params.getName());
-			} else {
-				log.info("Unable to undeploy stream");
-			}
-		}).then(lspClient.notification().method("scdf/undeployedStream").exchange());
+				log.debug("Client sending stream create request, params {}", params);
+				DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
+				if (operations != null) {
+					log.debug("Undeploying stream {}", params);
+					operations.streamOperations().undeploy(params.getName());
+				} else {
+					log.info("Unable to undeploy stream");
+				}
+			})
+			.then(Mono.just(DataflowResponse.ok(String.format("Stream %s undeployed", params.getName()))))
+			.onErrorReturn(DataflowResponse.error(String.format("Stream %s undeploy failed", params.getName())));
 	}
 
 	@JsonRpcRequestMapping(method = "destroyStream")
 	@JsonRpcNotification
-	public Mono<Void> destroyStream(@JsonRpcRequestParams DataflowStreamDestroyParams params, JsonRpcSession session,
+	public Mono<DataflowResponse> destroyStream(@JsonRpcRequestParams DataflowStreamDestroyParams params, JsonRpcSession session,
 			LspClient lspClient) {
 		return Mono.fromRunnable(() -> {
-			log.debug("Client sending stream destroy request, params {}", params);
-			DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
-			if (operations != null) {
-				log.debug("Destroying stream {}", params);
-				operations.streamOperations().destroy(params.getName());
-			} else {
-				log.info("Unable to destroy stream");
-			}
-		}).then(lspClient.notification().method("scdf/destroyedStream").exchange());
+				log.debug("Client sending stream destroy request, params {}", params);
+				DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
+				if (operations != null) {
+					log.debug("Destroying stream {}", params);
+					operations.streamOperations().destroy(params.getName());
+				} else {
+					log.info("Unable to destroy stream");
+				}
+			})
+			.then(Mono.just(DataflowResponse.ok(String.format("Stream %s destroyed", params.getName()))))
+			.onErrorReturn(DataflowResponse.error(String.format("Stream %s destroy failed", params.getName())));
 	}
 
 	@JsonRpcRequestMapping(method = "createTask")
 	@JsonRpcNotification
-	public Mono<Void> createTask(@JsonRpcRequestParams DataflowTaskCreateParams params, JsonRpcSession session,
+	public Mono<DataflowResponse> createTask(@JsonRpcRequestParams DataflowTaskCreateParams params, JsonRpcSession session,
 			LspClient lspClient) {
 		return Mono.fromRunnable(() -> {
-			log.debug("Client sending task create request, params {}", params);
-			DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
-			if (operations != null) {
-				log.debug("Creating task {}", params);
-				operations.taskOperations().create(params.getName(), params.getDefinition(), params.getDescription());
-			} else {
-				log.info("Unable to create task");
-			}
-		}).then(lspClient.notification().method("scdf/createdTask").exchange());
+				log.debug("Client sending task create request, params {}", params);
+				DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
+				if (operations != null) {
+					log.debug("Creating task {}", params);
+					operations.taskOperations().create(params.getName(), params.getDefinition(), params.getDescription());
+				} else {
+					log.info("Unable to create task");
+				}
+			})
+			.then(Mono.just(DataflowResponse.ok(String.format("Task %s created", params.getName()))))
+			.onErrorReturn(DataflowResponse.error(String.format("Task %s create failed", params.getName())));
 	}
 
 	@JsonRpcRequestMapping(method = "launchTask")
 	@JsonRpcNotification
-	public Mono<Void> launchTask(@JsonRpcRequestParams DataflowTaskLaunchParams params, JsonRpcSession session,
+	public Mono<DataflowResponse> launchTask(@JsonRpcRequestParams DataflowTaskLaunchParams params, JsonRpcSession session,
 			LspClient lspClient) {
 		return Mono.fromRunnable(() -> {
-			log.debug("Client sending task launch request, params {}", params);
-			DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
-			if (operations != null) {
-				log.debug("Creating task {}", params);
-				operations.taskOperations().launch(params.getName(), params.getProperties(), params.getArguments(), null);
-			} else {
-				log.info("Unable to launch task");
-			}
-		}).then(lspClient.notification().method("scdf/launchedTask").exchange());
+				log.debug("Client sending task launch request, params {}", params);
+				DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
+				if (operations != null) {
+					log.debug("Creating task {}", params);
+					operations.taskOperations().launch(params.getName(), params.getProperties(), params.getArguments(),
+						null);
+				} else {
+					log.info("Unable to launch task");
+				}
+			})
+			.then(Mono.just(DataflowResponse.ok(String.format("Task %s launched", params.getName()))))
+			.onErrorReturn(DataflowResponse.error(String.format("Task %s launch failed", params.getName())));
 	}
 
 	@JsonRpcRequestMapping(method = "destroyTask")
 	@JsonRpcNotification
-	public Mono<Void> destroyTask(@JsonRpcRequestParams DataflowTaskDestroyParams params, JsonRpcSession session,
+	public Mono<DataflowResponse> destroyTask(@JsonRpcRequestParams DataflowTaskDestroyParams params, JsonRpcSession session,
 			LspClient lspClient) {
 		return Mono.fromRunnable(() -> {
-			log.debug("Client sending task destroy request, params {}", params);
-			DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
-			if (operations != null) {
-				log.debug("Destroying task {}", params);
-				operations.taskOperations().destroy(params.getName());
-			} else {
-				log.info("Unable to destroy task");
-			}
-		}).then(lspClient.notification().method("scdf/destroyedTask").exchange());
+				log.debug("Client sending task destroy request, params {}", params);
+				DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
+				if (operations != null) {
+					log.debug("Destroying task {}", params);
+					operations.taskOperations().destroy(params.getName());
+				} else {
+					log.info("Unable to destroy task");
+				}
+			})
+			.then(Mono.just(DataflowResponse.ok(String.format("Task %s destroyed", params.getName()))))
+			.onErrorReturn(DataflowResponse.error(String.format("Task %s destroy failed", params.getName())));
 	}
 
 	protected DataFlowOperations getDataFlowOperations(JsonRpcSession session, String server) {
