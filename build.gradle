@@ -1,13 +1,13 @@
 buildscript {
 	ext {
 		springDslVersion = '0.0.1.BUILD-SNAPSHOT'
-		springCloudDataflowVersion = '2.3.0.BUILD-SNAPSHOT'
-		springCloudDeployerVersion = '2.1.0.BUILD-SNAPSHOT'
+		springCloudDataflowVersion = '2.5.0.RELEASE'
+		springCloudDeployerVersion = '2.3.0.RELEASE'
 	}
 }
 
 plugins {
-	id 'org.springframework.boot' version '2.2.1.RELEASE'
+	id 'org.springframework.boot' version '2.2.7.RELEASE'
 	id 'java'
 }
 
