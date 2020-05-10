@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 the original author or authors.
+ * Copyright 2019-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.springframework.cloud.dataflow.language.server.config;
 
 import org.springframework.cloud.dataflow.language.server.controller.DataflowJsonRpcController;
+import org.springframework.cloud.dataflow.language.server.controller.TraceNotificationController;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dsl.lsp.server.support.JvmLspExiter;
@@ -32,5 +33,10 @@ public class DataflowLanguagesConfiguration {
     @Bean
     public DataflowJsonRpcController dataflowJsonRpcController() {
         return new DataflowJsonRpcController();
+    }
+
+    @Bean
+    public TraceNotificationController traceNotificationController() {
+        return new TraceNotificationController();
     }
 }

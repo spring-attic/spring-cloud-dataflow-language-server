@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 the original author or authors.
+ * Copyright 2019-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,6 +73,9 @@ public class DataflowLanguages {
 
 	// dsl context attribute names
 	public final static String CONTEXT_SESSION_ENVIRONMENTS_ATTRIBUTE = "jsonRpcSessionEnvironments";
+
+	// dsl context attribute name for $/setTraceNotification
+	public final static String CONTEXT_SESSION_TRACENOTIFICATION_ATTRIBUTE = "vscodeTraceNotification";
 
 	// Text constants
 	public static final DocumentText TEXT_ENV_PREFIX = DocumentText.from("@env");
