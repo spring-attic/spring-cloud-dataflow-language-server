@@ -68,6 +68,11 @@ public class AbstractTaskLanguageServiceTests {
 		"-- @name\n" +
 		"timestamp";
 
+	public static final String DSL_JUST_METADATA =
+		"-- @name name\n" +
+		"-- @desc desc\n" +
+		"-- @env env1\n";
+
 	@BeforeEach
 	public void setup() {
 		service.setDataflowCacheService(new DataflowCacheService());

@@ -25,17 +25,26 @@ import org.springframework.cloud.dataflow.core.dsl.ParseException;
 import org.springframework.cloud.dataflow.core.dsl.TaskNode;
 import org.springframework.cloud.dataflow.core.dsl.TaskParser;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowEnvironmentParams;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowEnvironmentParams.Environment;
 import org.springframework.cloud.dataflow.language.server.support.DataFlowOperationsService;
 import org.springframework.cloud.dataflow.language.server.support.DataflowCacheService;
+import org.springframework.cloud.dataflow.rest.client.DataFlowOperations;
 import org.springframework.dsl.document.Document;
 import org.springframework.dsl.document.DocumentText;
 import org.springframework.dsl.domain.Position;
 import org.springframework.dsl.domain.Range;
+import org.springframework.dsl.jsonrpc.session.JsonRpcSession;
+import org.springframework.dsl.lsp.LspSystemConstants;
 import org.springframework.dsl.service.AbstractDslService;
+import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.reconcile.DefaultReconcileProblem;
 import org.springframework.dsl.service.reconcile.ProblemSeverity;
 import org.springframework.dsl.service.reconcile.ProblemType;
 import org.springframework.dsl.service.reconcile.ReconcileProblem;
+import org.springframework.dsl.support.DslUtils;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -77,6 +86,56 @@ public abstract class AbstractTaskLanguageService extends AbstractDslService {
 		public String getCode() {
 			return code;
 		}
+	}
+
+	protected DataFlowOperations resolveDataFlowOperations(DslContext context, Position position) {
+		JsonRpcSession session = context.getAttribute(LspSystemConstants.CONTEXT_SESSION_ATTRIBUTE);
+		DataflowEnvironmentParams params = session
+				.getAttribute(DataflowLanguages.CONTEXT_SESSION_ENVIRONMENTS_ATTRIBUTE);
+		String defaultEnvironment = resolveEnvironmentName(context, position, params);
+		List<Environment> environments = params.getEnvironments();
+		Environment environment = environments.stream()
+			.filter(env -> ObjectUtils.nullSafeEquals(defaultEnvironment, env.getName()))
+			.findFirst()
+			.orElse(null);
+		if (environment != null) {
+			try {
+				log.debug("Getting DataFlowTemplate for environment {}", defaultEnvironment);
+				return dataflowOperationsService.getDataFlowOperations(environment, params.getTrustssl());
+			} catch (Exception e) {
+				return null;
+			}
+		}
+		return null;
+	}
+
+	protected String resolveEnvironmentName(DslContext context, Position position, DataflowEnvironmentParams params) {
+		String defaultEnvironment = resolveDefinedEnvironmentName(context, position);
+		if (defaultEnvironment == null) {
+			defaultEnvironment = params.getDefaultEnvironment();
+		}
+		return defaultEnvironment;
+	}
+
+	protected String resolveDefinedEnvironmentName(DslContext context, Position position) {
+		for (TaskItem item : parseCached(context.getDocument())) {
+			if (DslUtils.isPositionInRange(position, item.getRange())) {
+				DefinitionItem definitionItem = item.getDefinitionItem();
+				if (definitionItem != null) {
+					LaunchItem envItem = definitionItem.getEnvItem();
+					if (envItem != null) {
+						Range contentRange = envItem.getContentRange();
+						String envName = envItem.getText()
+								.substring(contentRange.getStart().getCharacter() + 5, envItem.getText().length())
+								.trim().toString();
+						if (StringUtils.hasText(envName)) {
+							return envName;
+						}
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	protected Flux<TaskItem> parse(Document document) {
@@ -235,7 +294,10 @@ public abstract class AbstractTaskLanguageService extends AbstractDslService {
 		return taskItem;
 	}
 
-	private DocumentText parseName(DocumentText text) {
+	protected DocumentText parseName(DocumentText text) {
+		if (text.length() == 0) {
+			return null;
+		}
 		int i = 0;
 		do {
 			char c = text.charAt(i);
