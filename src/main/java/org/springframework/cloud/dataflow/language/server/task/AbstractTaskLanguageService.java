@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 the original author or authors.
+ * Copyright 2019-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.springframework.cloud.dataflow.language.server.task;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -90,10 +91,13 @@ public abstract class AbstractTaskLanguageService extends AbstractDslService {
 
 	protected DataFlowOperations resolveDataFlowOperations(DslContext context, Position position) {
 		JsonRpcSession session = context.getAttribute(LspSystemConstants.CONTEXT_SESSION_ATTRIBUTE);
+		if (session == null) {
+			return null;
+		}
 		DataflowEnvironmentParams params = session
 				.getAttribute(DataflowLanguages.CONTEXT_SESSION_ENVIRONMENTS_ATTRIBUTE);
 		String defaultEnvironment = resolveEnvironmentName(context, position, params);
-		List<Environment> environments = params.getEnvironments();
+		List<Environment> environments = params != null ? params.getEnvironments() : Collections.emptyList();
 		Environment environment = environments.stream()
 			.filter(env -> ObjectUtils.nullSafeEquals(defaultEnvironment, env.getName()))
 			.findFirst()
@@ -111,7 +115,7 @@ public abstract class AbstractTaskLanguageService extends AbstractDslService {
 
 	protected String resolveEnvironmentName(DslContext context, Position position, DataflowEnvironmentParams params) {
 		String defaultEnvironment = resolveDefinedEnvironmentName(context, position);
-		if (defaultEnvironment == null) {
+		if (defaultEnvironment == null && params != null) {
 			defaultEnvironment = params.getDefaultEnvironment();
 		}
 		return defaultEnvironment;
@@ -403,7 +407,7 @@ public abstract class AbstractTaskLanguageService extends AbstractDslService {
 	public static class DefinitionItem {
 		private TaskNode taskNode;
 		private Range range;
-		private ReconcileProblem reconcileProblem;
+		protected ReconcileProblem reconcileProblem;
 		private LaunchItem envItem;
 		private LaunchItem nameItem;
 		private LaunchItem descItem;

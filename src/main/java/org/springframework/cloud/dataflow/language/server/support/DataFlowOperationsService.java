@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 the original author or authors.
+ * Copyright 2019-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,20 @@
 package org.springframework.cloud.dataflow.language.server.support;
 
 import java.net.URI;
+import java.time.Duration;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cloud.dataflow.language.server.domain.DataflowEnvironmentParams.Environment;
 import org.springframework.cloud.dataflow.rest.client.DataFlowOperations;
 import org.springframework.cloud.dataflow.rest.client.DataFlowTemplate;
 import org.springframework.cloud.dataflow.rest.util.HttpClientConfigurer;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * Service class to share instances of a {@link DataFlowOperations}. Mostly done
@@ -55,8 +56,12 @@ public class DataFlowOperationsService {
 		URI uri = URI.create(environment.getUrl());
 		String username = environment.getCredentials().getUsername();
 		String password = environment.getCredentials().getPassword();
+
+		RestTemplateBuilder builder = new RestTemplateBuilder()
+			.setConnectTimeout(Duration.ofSeconds(2))
+			.setReadTimeout(Duration.ofSeconds(2));
+
 		if ((StringUtils.hasText(username) && StringUtils.hasText(password)) || (trustssl != null && trustssl)) {
-			RestTemplate restTemplate = new RestTemplate();
 			HttpClientConfigurer httpClientConfigurer = HttpClientConfigurer.create(uri);
 			if (StringUtils.hasText(username) && StringUtils.hasText(password)) {
 				httpClientConfigurer.basicAuthCredentials(username, password);
@@ -64,11 +69,10 @@ public class DataFlowOperationsService {
 			if (trustssl != null && trustssl) {
 				httpClientConfigurer.skipTlsCertificateVerification(true);
 			}
-			restTemplate.setRequestFactory(httpClientConfigurer.buildClientHttpRequestFactory());
-			return new DataFlowTemplate(uri, restTemplate);
-		} else {
-			return new DataFlowTemplate(uri);
+			builder.requestFactory(() -> httpClientConfigurer.buildClientHttpRequestFactory());
 		}
+
+		return new DataFlowTemplate(uri, builder.build());
 	}
 
 	@Override
